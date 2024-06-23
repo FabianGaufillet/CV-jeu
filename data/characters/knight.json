@@ -1,9 +1,7 @@
 {
   "idleL":{
-    "animated": true,
-    "transform":"scaleX(-1)",
-    "velocity":0,
-    "src":"images/knight/idle.png",
+    "velocityX":0,
+    "velocityY": 0,
     "moves":[
       {"x":5283,"y":0,"w":587,"h":707},
       {"x":4696,"y":0,"w":587,"h":707},
@@ -17,10 +15,8 @@
       {"x":0,"y":0,"w":587,"h":707}
     ]},
   "idleR":{
-    "animated": true,
-    "transform":"scaleX(1)",
-    "velocity":0,
-    "src":"images/knight/idle.png",
+    "velocityX":0,
+    "velocityY": 0,
     "moves":[
       {"x":0,"y":0,"w":587,"h":707},
       {"x":587,"y":0,"w":587,"h":707},
@@ -34,10 +30,8 @@
       {"x":5283,"y":0,"w":587,"h":707}
     ]},
   "walkL":{
-    "animated": true,
-    "transform":"scaleX(-1)",
-    "velocity":-30,
-    "src":"images/knight/walk.png",
+    "velocityX":-10,
+    "velocityY": 0,
     "moves":[
       {"x":5283,"y":0,"w":587,"h":707},
       {"x":4696,"y":0,"w":587,"h":707},
@@ -51,10 +45,8 @@
       {"x":0,"y":0,"w":587,"h":707}
     ]},
   "walkR":{
-    "animated": true,
-    "transform":"scaleX(1)",
-    "velocity":30,
-    "src":"images/knight/walk.png",
+    "velocityX":10,
+    "velocityY": 0,
     "moves":[
       {"x":0,"y":0,"w":587,"h":707},
       {"x":587,"y":0,"w":587,"h":707},
@@ -68,10 +60,8 @@
       {"x":5283,"y":0,"w":587,"h":707}
     ]},
   "runL":{
-    "animated": true,
-    "transform":"scaleX(-1)",
-    "velocity":-60,
-    "src":"images/knight/run.png",
+    "velocityX":-20,
+    "velocityY": 0,
     "moves":[
       {"x":5283,"y":0,"w":587,"h":707},
       {"x":4696,"y":0,"w":587,"h":707},
@@ -85,10 +75,8 @@
       {"x":0,"y":0,"w":587,"h":707}
     ]},
   "runR":{
-    "animated": true,
-    "transform":"scaleX(1)",
-    "velocity":60,
-    "src":"images/knight/run.png",
+    "velocityX":20,
+    "velocityY": 0,
     "moves":[
       {"x":0,"y":0,"w":587,"h":707},
       {"x":587,"y":0,"w":587,"h":707},
@@ -102,10 +90,8 @@
       {"x":5283,"y":0,"w":587,"h":707}
     ]},
   "attackL":{
-    "animated": true,
-    "transform":"scaleX(-1)",
-    "velocity":0,
-    "src":"images/knight/attack.png",
+    "velocityX":0,
+    "velocityY": 0,
     "moves":[
       {"x":5283,"y":0,"w":587,"h":707},
       {"x":4696,"y":0,"w":587,"h":707},
@@ -119,10 +105,8 @@
       {"x":0,"y":0,"w":587,"h":707}
     ]},
   "attackR":{
-    "animated": true,
-    "transform":"scaleX(1)",
-    "velocity":0,
-    "src":"images/knight/attack.png",
+    "velocityX":0,
+    "velocityY": 0,
     "moves":[
       {"x":0,"y":0,"w":587,"h":707},
       {"x":587,"y":0,"w":587,"h":707},
@@ -136,9 +120,8 @@
       {"x":5283,"y":0,"w":587,"h":707}
     ]},
   "jumpR":{
-    "animated": true,
-    "transform":"scaleX(1)",
-    "velocity":0,"src":"images/knight/jump.png",
+    "velocityX":0,
+    "velocityY": -10,
     "moves":[
       {"x":0,"y":0,"w":587,"h":707},
       {"x":587,"y":0,"w":587,"h":707},
@@ -152,10 +135,38 @@
       {"x":5283,"y":0,"w":587,"h":707}
     ]},
   "jumpL":{
-    "animated": true,
-    "transform":"scaleX(-1)",
-    "velocity":0,
-    "src":"images/knight/jump.png",
+    "velocityX":0,
+    "velocityY": -10,
+    "moves":[
+      {"x":5283,"y":0,"w":587,"h":707},
+      {"x":4696,"y":0,"w":587,"h":707},
+      {"x":4109,"y":0,"w":587,"h":707},
+      {"x":3522,"y":0,"w":587,"h":707},
+      {"x":2935,"y":0,"w":587,"h":707},
+      {"x":2348,"y":0,"w":587,"h":707},
+      {"x":1761,"y":0,"w":587,"h":707},
+      {"x":1174,"y":0,"w":587,"h":707},
+      {"x":587,"y":0,"w":587,"h":707},
+      {"x":0,"y":0,"w":587,"h":707}
+    ]},
+  "jumpAttackR":{
+    "velocityX":0,
+    "velocityY": -10,
+    "moves":[
+      {"x":0,"y":0,"w":587,"h":707},
+      {"x":587,"y":0,"w":587,"h":707},
+      {"x":1174,"y":0,"w":587,"h":707},
+      {"x":1761,"y":0,"w":587,"h":707},
+      {"x":2348,"y":0,"w":587,"h":707},
+      {"x":2935,"y":0,"w":587,"h":707},
+      {"x":3522,"y":0,"w":587,"h":707},
+      {"x":4109,"y":0,"w":587,"h":707},
+      {"x":4696,"y":0,"w":587,"h":707},
+      {"x":5283,"y":0,"w":587,"h":707}
+    ]},
+  "jumpAttackL":{
+    "velocityX":0,
+    "velocityY": -10,
     "moves":[
       {"x":5283,"y":0,"w":587,"h":707},
       {"x":4696,"y":0,"w":587,"h":707},
@@ -169,10 +180,8 @@
       {"x":0,"y":0,"w":587,"h":707}
     ]},
   "deadL":{
-    "animated": true,
-    "transform":"scaleX(-1)",
-    "velocity":50,
-    "src":"images/knight/dead.png",
+    "velocityX":5,
+    "velocityY": 0,
     "moves":[
       {"x":8496,"y":0,"w":944,"h":751},
       {"x":7552,"y":0,"w":944,"h":751},
@@ -186,10 +195,8 @@
       {"x":0,"y":0,"w":944,"h":751}
     ]},
   "deadR":{
-    "animated": true,
-    "transform":"scaleX(1)",
-    "velocity":-50,
-    "src":"images/knight/dead.png",
+    "velocityX":-5,
+    "velocityY": 0,
     "moves":[
       {"x":0,"y":0,"w":944,"h":751},
       {"x":944,"y":0,"w":944,"h":751},

@@ -9,21 +9,23 @@ export class Character {
         "data": "./data/characters/",
         "image": "./images/characters/"
     };
-    #dataPath;
+    #dataFile;
     #data;
     #imagePath;
+    #imageFile;
     #image;
     #sprites;
     #canvasImage;
 
     constructor(type,state) {
-        this.#dataPath = `${this.#rootPaths["data"]}/${type}.json`;
-        this.#imagePath = `${this.#rootPaths["image"]}/${type}/${state}.png`;
+        this.#dataFile = `${this.#rootPaths["data"]}${type}.json`;
+        this.#imagePath = `${this.#rootPaths["image"]}${type}/`;
+        this.#imageFile = `${this.#imagePath}${state}.png`;
         this.#sprites = new Sprite(state,0);
     }
 
     loadData() {
-        return fetch(this.#dataPath)
+        return fetch(this.#dataFile)
             .then(res => res.json())
             .then(data => this.#data = data);
     }
@@ -33,7 +35,7 @@ export class Character {
             this.#image = new Image();
             this.#image.addEventListener("load", resolve);
             this.#image.addEventListener("error", reject);
-            this.#image.src = this.#imagePath;
+            this.#image.src = this.#imageFile;
         });
     }
 
@@ -71,6 +73,11 @@ export class Character {
 
     get canvasImage() {
         return this.#canvasImage;
+    }
+
+    set imageFile(state) {
+        this.#imageFile = `${this.#imagePath}${state}.png`;
+        this.#image.src = this.#imageFile;
     }
 
 }

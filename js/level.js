@@ -15,8 +15,8 @@ export class Level {
     #canvasImage;
 
     constructor(name) {
-        this.#dataPath = `${this.#rootPaths["data"]}/${name}.json`;
-        this.#imagePath = `${this.#rootPaths["image"]}/${name}.svg`;
+        this.#dataPath = `${this.#rootPaths["data"]}${name}.json`;
+        this.#imagePath = `${this.#rootPaths["image"]}${name}.svg`;
     }
 
     loadData() {

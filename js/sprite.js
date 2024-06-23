@@ -20,4 +20,12 @@ export class Sprite {
         return this.#currentState;
     }
 
+    set currentState(state) {
+        this.#currentState = state;
+    }
+
+    set currentIndexOfSprite(index) {
+        this.#currentIndexOfSprite = index;
+    }
+
 }

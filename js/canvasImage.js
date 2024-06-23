@@ -47,8 +47,11 @@ export class CanvasImage {
     }
 
     set positionOfSourceImage(position) {
-        this.#positionOfSourceImage.x = position.x;
-        this.#positionOfSourceImage.y = position.y;
+        this.#positionOfSourceImage = position;
+    }
+
+    set positionInCanvas(position) {
+        this.#positionInCanvas = position;
     }
 
 }
