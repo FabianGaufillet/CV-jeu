@@ -16,8 +16,8 @@ export class CanvasElement {
         return htmlCanvasElement.getContext("2d");
     }
 
-    clearRect() {
-        this.#context.clearRect(0, 0, this.#width, this.#height);
+    clearRect(x=0,y=0,width=this.#width,height=this.#height) {
+        this.#context.clearRect(x, y, width, height);
     }
 
     drawImage(element) {

@@ -1,14 +1,21 @@
 "use strict";
 
+import {CanvasElement} from "./canvasElement.js";
+import {KeyboardEventsManager} from "./keyboardEventsManager.js";
+
 export class Game {
 
+    #canvasElement;
     #level;
     #player;
     #requestAnimationFrameID;
+    #keyboardEventsManager;
 
-    constructor(level,player) {
+    constructor(htmlCanvasElement,level,player) {
+        this.#canvasElement = new CanvasElement(htmlCanvasElement);
         this.#level = level;
         this.#player = player;
+        this.#keyboardEventsManager = new KeyboardEventsManager();
     }
 
     loadGameData() {
@@ -20,104 +27,58 @@ export class Game {
         ];
     }
 
-    animate(canvasElement) {
-        this.#eventsManager();
-        this.#loop(canvasElement);
-    }
+    #handleKeyPress() {
 
-    #eventsManager() {
+        const isKeyPressed = Object.entries(this.#keyboardEventsManager.keyPressed).filter(entry=> entry[0] !== "control" && entry[1]).length;
 
-        document.addEventListener("keydown", (event) => {
-
-            switch(event.key) {
-                case "ArrowLeft":
-                    if (!event.ctrlKey && this.#player.sprites.currentState !== "walkL") this.#updateStateOfPlayer("walkL");
-                    else if (event.ctrlKey && this.#player.sprites.currentState !== "runL") this.#updateStateOfPlayer("runL");
-                    break;
-
-                case "ArrowRight":
-                    if(!event.ctrlKey && this.#player.sprites.currentState !== "walkR") this.#updateStateOfPlayer("walkR");
-                    else if (event.ctrlKey && this.#player.sprites.currentState !== "runR") this.#updateStateOfPlayer("runR");
-                    break;
-
-                case "ArrowUp":
-                    if (!this.#player.sprites.currentState.startsWith("jump")) {
-                        if (this.#player.sprites.currentState.endsWith("L")) this.#updateStateOfPlayer("jumpL");
-                        else if (this.#player.sprites.currentState.endsWith("R")) this.#updateStateOfPlayer("jumpR");
-                    }
-                    break;
-
-                case "Control":
-                    if (this.#player.sprites.currentState === "walkL") this.#updateStateOfPlayer("runL");
-                    else if (this.#player.sprites.currentState === "walkR") this.#updateStateOfPlayer("runR");
-                    break;
-
-                case "x":
-                case "X":
-                    if (!this.#player.sprites.currentState.startsWith("attack")) {
-                        if (this.#player.sprites.currentState.endsWith("L")) this.#updateStateOfPlayer("attackL");
-                        else if (this.#player.sprites.currentState.endsWith("R")) this.#updateStateOfPlayer("attackR");
-                    }
-                    break;
-
-                default:
-                    return;
+        if (this.#player.onGround) {
+            if (!this.#player.sprites.currentState.startsWith("idle") && !isKeyPressed) {
+                if (this.#player.sprites.currentState.endsWith("L")) this.#player.updateStateOfCharacter("idleL");
+                else if (this.#player.sprites.currentState.endsWith("R")) this.#player.updateStateOfCharacter("idleR");
+                return false;
             }
-        });
 
-        document.addEventListener("keyup", (event) => {
-
-            switch(event.key) {
-                case "ArrowLeft":
-                    this.#updateStateOfPlayer("idleL");
-                    break;
-
-                case "ArrowRight":
-                    this.#updateStateOfPlayer("idleR");
-                    break;
-
-                case "Control":
-                    if (this.#player.sprites.currentState === "runL") this.#updateStateOfPlayer("walkL");
-                    else if (this.#player.sprites.currentState === "runR") this.#updateStateOfPlayer("walkR");
-                    break;
-
-                case "x":
-                case "X":
-                    if (this.#player.sprites.currentState.startsWith("attack")) {
-                        if (this.#player.sprites.currentState.endsWith("L")) this.#updateStateOfPlayer("idleL");
-                        else if (this.#player.sprites.currentState.endsWith("R")) this.#updateStateOfPlayer("idleR");
-                    }
-                    break;
-
-                default:
-                    return;
+            if (this.#keyboardEventsManager.keyPressed["arrowLeft"]) {
+                if (!this.#keyboardEventsManager.keyPressed["control"] && this.#player.sprites.currentState !== "walkL") {
+                    this.#player.updateStateOfCharacter("walkL");
+                } else if (this.#keyboardEventsManager.keyPressed["control"] && this.#player.sprites.currentState !== "runL") {
+                    this.#player.updateStateOfCharacter("runL");
+                }
             }
-        });
+
+            if (this.#keyboardEventsManager.keyPressed["arrowRight"]) {
+                if (!this.#keyboardEventsManager.keyPressed["control"] && this.#player.sprites.currentState !== "walkR") {
+                    this.#player.updateStateOfCharacter("walkR");
+                } else if (this.#keyboardEventsManager.keyPressed["control"] && this.#player.sprites.currentState !== "runR") {
+                    this.#player.updateStateOfCharacter("runR");
+                }
+            }
+
+            if (this.#keyboardEventsManager.keyPressed["arrowUp"]) {
+                if (this.#player.sprites.currentState.endsWith("L")) this.#player.updateStateOfCharacter("jumpL");
+                else if (this.#player.sprites.currentState.endsWith("R")) this.#player.updateStateOfCharacter("jumpR");
+            }
+
+            if (this.#keyboardEventsManager.keyPressed["x"]) {
+                if (this.#player.sprites.currentState.endsWith("L") && this.#player.sprites.currentState !== "attackL") this.#player.updateStateOfCharacter("attackL");
+                else if (this.#player.sprites.currentState.endsWith("R") && this.#player.sprites.currentState !== "attackR" ) this.#player.updateStateOfCharacter("attackR");
+            }
+
+        }
 
     }
 
-    #loop(canvasElement) {
-        this.#updatePositionOfPlayer();
-        canvasElement.clearRect();
-        canvasElement.drawImage(this.#level);
-        canvasElement.drawImage(this.#player);
-        this.#requestAnimationFrameID = requestAnimationFrame(()=>this.#loop(canvasElement));
-    }
-
-    #updatePositionOfPlayer() {
-        const currentState = this.#player.sprites.currentState,
-              nextSprite = this.#player.sprites.getNextSprite(this.#player.data[currentState]["moves"]);
-
-        this.#player.canvasImage.positionOfSourceImage = {"x":nextSprite["x"],"y":nextSprite["y"]};
-        this.#player.canvasImage.positionInCanvas["x"] += this.#player.data[currentState]["velocityX"];
-        this.#player.canvasImage.positionInCanvas["y"] += this.#player.data[currentState]["velocityY"];
-
-    }
-
-    #updateStateOfPlayer(state) {
-        this.#player.imageFile = state;
-        this.#player.sprites.currentState = state;
-        this.#player.sprites.currentIndexOfSprite = 0;
+    loop() {
+        this.#handleKeyPress();
+        this.#player.updatePositionOfCharacter(this.#canvasElement.width,this.#canvasElement.height);
+        this.#canvasElement.clearRect();
+        this.#canvasElement.drawImage(this.#level);
+        this.#canvasElement.drawImage(this.#player);
+        this.#player.isOnGround(
+            this.#level["data"]["ground"],
+            this.#canvasElement.width,
+            this.#canvasElement.height);
+        this.#requestAnimationFrameID = requestAnimationFrame(() => this.loop());
     }
 
 }

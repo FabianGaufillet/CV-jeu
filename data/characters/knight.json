@@ -30,7 +30,7 @@
       {"x":5283,"y":0,"w":587,"h":707}
     ]},
   "walkL":{
-    "velocityX":-10,
+    "velocityX":-0.001,
     "velocityY": 0,
     "moves":[
       {"x":5283,"y":0,"w":587,"h":707},
@@ -45,7 +45,7 @@
       {"x":0,"y":0,"w":587,"h":707}
     ]},
   "walkR":{
-    "velocityX":10,
+    "velocityX":0.001,
     "velocityY": 0,
     "moves":[
       {"x":0,"y":0,"w":587,"h":707},
@@ -60,7 +60,7 @@
       {"x":5283,"y":0,"w":587,"h":707}
     ]},
   "runL":{
-    "velocityX":-20,
+    "velocityX":-0.002,
     "velocityY": 0,
     "moves":[
       {"x":5283,"y":0,"w":587,"h":707},
@@ -75,7 +75,7 @@
       {"x":0,"y":0,"w":587,"h":707}
     ]},
   "runR":{
-    "velocityX":20,
+    "velocityX":0.002,
     "velocityY": 0,
     "moves":[
       {"x":0,"y":0,"w":587,"h":707},
@@ -121,7 +121,7 @@
     ]},
   "jumpR":{
     "velocityX":0,
-    "velocityY": -10,
+    "velocityY": -0.03,
     "moves":[
       {"x":0,"y":0,"w":587,"h":707},
       {"x":587,"y":0,"w":587,"h":707},
@@ -136,7 +136,7 @@
     ]},
   "jumpL":{
     "velocityX":0,
-    "velocityY": -10,
+    "velocityY": -0.03,
     "moves":[
       {"x":5283,"y":0,"w":587,"h":707},
       {"x":4696,"y":0,"w":587,"h":707},
@@ -151,7 +151,7 @@
     ]},
   "jumpAttackR":{
     "velocityX":0,
-    "velocityY": -10,
+    "velocityY": -0.02,
     "moves":[
       {"x":0,"y":0,"w":587,"h":707},
       {"x":587,"y":0,"w":587,"h":707},
@@ -166,7 +166,7 @@
     ]},
   "jumpAttackL":{
     "velocityX":0,
-    "velocityY": -10,
+    "velocityY": -0.02,
     "moves":[
       {"x":5283,"y":0,"w":587,"h":707},
       {"x":4696,"y":0,"w":587,"h":707},
@@ -180,7 +180,7 @@
       {"x":0,"y":0,"w":587,"h":707}
     ]},
   "deadL":{
-    "velocityX":5,
+    "velocityX":0.025,
     "velocityY": 0,
     "moves":[
       {"x":8496,"y":0,"w":944,"h":751},
@@ -195,7 +195,7 @@
       {"x":0,"y":0,"w":944,"h":751}
     ]},
   "deadR":{
-    "velocityX":-5,
+    "velocityX":-0.025,
     "velocityY": 0,
     "moves":[
       {"x":0,"y":0,"w":944,"h":751},
