@@ -8,13 +8,15 @@ export class Game {
     #canvasElement;
     #level;
     #player;
+    #enemies;
     #requestAnimationFrameID;
     #keyboardEventsManager;
 
-    constructor(htmlCanvasElement,level,player) {
+    constructor(htmlCanvasElement,level,player,...enemies) {
         this.#canvasElement = new CanvasElement(htmlCanvasElement);
         this.#level = level;
         this.#player = player;
+        this.#enemies = enemies;
         this.#keyboardEventsManager = new KeyboardEventsManager();
     }
 
@@ -23,7 +25,9 @@ export class Game {
             this.#level.loadData(),
             this.#level.loadImage(),
             this.#player.loadData(),
-            this.#player.loadImage()
+            this.#player.loadImage(),
+            ...this.#enemies.map(enemy => enemy.loadData()),
+            ...this.#enemies.map(enemy => enemy.loadImage())
         ];
     }
 
@@ -71,13 +75,23 @@ export class Game {
     loop() {
         this.#handleKeyPress();
         this.#player.updatePositionOfCharacter(this.#canvasElement.width,this.#canvasElement.height);
+        for (const enemy of this.#enemies) enemy.updatePositionOfCharacter(this.#canvasElement.width,this.#canvasElement.height);
         this.#canvasElement.clearRect();
         this.#canvasElement.drawImage(this.#level);
         this.#canvasElement.drawImage(this.#player);
+        for (const enemy of this.#enemies) this.#canvasElement.drawImage(enemy);
         this.#player.isOnGround(
             this.#level["data"]["ground"],
             this.#canvasElement.width,
-            this.#canvasElement.height);
+            this.#canvasElement.height
+        );
+        for (const enemy of this.#enemies) {
+            enemy.isOnGround(
+                this.#level["data"]["ground"],
+                this.#canvasElement.width,
+                this.#canvasElement.height
+            )
+        }
         this.#requestAnimationFrameID = requestAnimationFrame(() => this.loop());
     }
 

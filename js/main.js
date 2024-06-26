@@ -9,11 +9,18 @@ import {Game} from "./game.js";
         const canvas = document.querySelector("canvas"),
               level = new Level("level1"),
               player = new Character("knight","idleR"),
-              game = new Game(canvas,level,player);
+              enemies = [
+                  new Character("zombie_female","walkR"),
+                  new Character("zombie_male","walkL")
+                  ],
+              game = new Game(canvas,level,player,...enemies);
 
         Promise.all(game.loadGameData()).then(() => {
             level.initCanvasImage(canvas);
             player.initCanvasImage(level["data"]["player"],canvas.width,canvas.height);
+            for (let i=0; i<enemies.length; i++) {
+                enemies[i].initCanvasImage(level["data"]["enemies"][i],canvas.width,canvas.height);
+            }
             game.loop();
         });
 

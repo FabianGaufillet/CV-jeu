@@ -20,7 +20,7 @@ export class Character {
     #velocityY = 0;
     #onGround = true;
     #maxVelocityX = {
-        "walk":0.005,
+        "walk":0.004,
         "run":0.01
     };
     #maxVelocityY = 0.03;
@@ -104,6 +104,17 @@ export class Character {
 
         this.#canvasImage.positionInCanvas["x"] += this.#velocityX;
         this.#canvasImage.positionInCanvas["y"] += this.#velocityY;
+
+        if (this.#canvasImage.positionInCanvas["x"] + this.#canvasImage.sizeInCanvas["width"] < 0) {
+            this.#canvasImage.positionInCanvas["x"] = canvasWidth+this.#canvasImage.positionInCanvas["x"];
+        } else if (this.#canvasImage.positionInCanvas["x"] >= canvasWidth) {
+            this.#canvasImage.positionInCanvas["x"] = 0;
+        }
+
+        if (this.#canvasImage.positionInCanvas["y"] >= canvasHeight) {
+            this.#canvasImage.positionInCanvas["y"] = 0;
+        }
+
     }
 
     updateStateOfCharacter(state) {
