@@ -17,9 +17,9 @@ import {Game} from "./game.js";
 
         Promise.all(game.loadGameData()).then(() => {
             level.initCanvasImage(canvas);
-            player.initCanvasImage(level["data"]["player"],canvas.width,canvas.height);
+            player.initCanvasImage(level["data"]["playerStartPosition"],canvas.width,canvas.height);
             for (let i=0; i<enemies.length; i++) {
-                enemies[i].initCanvasImage(level["data"]["enemies"][i],canvas.width,canvas.height);
+                enemies[i].initCanvasImage(level["data"]["enemiesStartPosition"][i],canvas.width,canvas.height);
             }
             game.loop();
         });

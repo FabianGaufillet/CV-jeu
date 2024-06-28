@@ -2,6 +2,7 @@
 
 import {CanvasElement} from "./canvasElement.js";
 import {KeyboardEventsManager} from "./keyboardEventsManager.js";
+import {Character} from "./character.js";
 
 export class Game {
 
@@ -31,67 +32,22 @@ export class Game {
         ];
     }
 
-    #handleKeyPress() {
-
-        const isKeyPressed = Object.entries(this.#keyboardEventsManager.keyPressed).filter(entry=> entry[0] !== "control" && entry[1]).length;
-
-        if (this.#player.onGround) {
-            if (!this.#player.sprites.currentState.startsWith("idle") && !isKeyPressed) {
-                if (this.#player.sprites.currentState.endsWith("L")) this.#player.updateStateOfCharacter("idleL");
-                else if (this.#player.sprites.currentState.endsWith("R")) this.#player.updateStateOfCharacter("idleR");
-                return false;
-            }
-
-            if (this.#keyboardEventsManager.keyPressed["arrowLeft"]) {
-                if (!this.#keyboardEventsManager.keyPressed["control"] && this.#player.sprites.currentState !== "walkL") {
-                    this.#player.updateStateOfCharacter("walkL");
-                } else if (this.#keyboardEventsManager.keyPressed["control"] && this.#player.sprites.currentState !== "runL") {
-                    this.#player.updateStateOfCharacter("runL");
-                }
-            }
-
-            if (this.#keyboardEventsManager.keyPressed["arrowRight"]) {
-                if (!this.#keyboardEventsManager.keyPressed["control"] && this.#player.sprites.currentState !== "walkR") {
-                    this.#player.updateStateOfCharacter("walkR");
-                } else if (this.#keyboardEventsManager.keyPressed["control"] && this.#player.sprites.currentState !== "runR") {
-                    this.#player.updateStateOfCharacter("runR");
-                }
-            }
-
-            if (this.#keyboardEventsManager.keyPressed["arrowUp"]) {
-                if (this.#player.sprites.currentState.endsWith("L")) this.#player.updateStateOfCharacter("jumpL");
-                else if (this.#player.sprites.currentState.endsWith("R")) this.#player.updateStateOfCharacter("jumpR");
-            }
-
-            if (this.#keyboardEventsManager.keyPressed["x"]) {
-                if (this.#player.sprites.currentState.endsWith("L") && this.#player.sprites.currentState !== "attackL") this.#player.updateStateOfCharacter("attackL");
-                else if (this.#player.sprites.currentState.endsWith("R") && this.#player.sprites.currentState !== "attackR" ) this.#player.updateStateOfCharacter("attackR");
-            }
-
-        }
-
-    }
-
     loop() {
-        this.#handleKeyPress();
-        this.#player.updatePositionOfCharacter(this.#canvasElement.width,this.#canvasElement.height);
-        for (const enemy of this.#enemies) enemy.updatePositionOfCharacter(this.#canvasElement.width,this.#canvasElement.height);
-        this.#canvasElement.clearRect();
-        this.#canvasElement.drawImage(this.#level);
-        this.#canvasElement.drawImage(this.#player);
-        for (const enemy of this.#enemies) this.#canvasElement.drawImage(enemy);
-        this.#player.isOnGround(
+        this.#player.setNextStateOfCharacter(this.#keyboardEventsManager.keyPressed);
+        Character.updatePositionsOfCharacters(
+            this.#canvasElement.width,
+            this.#canvasElement.height,
+            this.#player,
+            ...this.#enemies
+        );
+        this.#canvasElement.drawImage([this.#level,...this.#enemies,this.#player]);
+        Character.updateOnGroundStatus(
             this.#level["data"]["ground"],
             this.#canvasElement.width,
-            this.#canvasElement.height
+            this.#canvasElement.height,
+            this.#player,
+            ...this.#enemies
         );
-        for (const enemy of this.#enemies) {
-            enemy.isOnGround(
-                this.#level["data"]["ground"],
-                this.#canvasElement.width,
-                this.#canvasElement.height
-            )
-        }
         this.#requestAnimationFrameID = requestAnimationFrame(() => this.loop());
     }
 

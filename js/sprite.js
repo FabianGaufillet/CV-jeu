@@ -11,9 +11,9 @@ export class Sprite {
     }
 
     getNextSprite(sprites) {
-        const currentIndexOfSprite = this.#currentIndexOfSprite;
+        const previousIndexOfSprite = this.#currentIndexOfSprite;
         this.#currentIndexOfSprite = (this.#currentIndexOfSprite + 1)%sprites.length;
-        return sprites[currentIndexOfSprite];
+        return sprites[previousIndexOfSprite];
     }
 
     get currentState() {

@@ -17,18 +17,23 @@ export class KeyboardEventsManager {
 
             if (event.repeat) return false;
             switch(event.key) {
+
                 case "ArrowLeft":
                     this.#arrowLeft = true;
                     break;
+
                 case "ArrowRight":
                     this.#arrowRight = true;
                     break;
+
                 case "ArrowUp":
                     this.#arrowUp = true;
                     break;
+
                 case "Control":
                     this.#control = true;
                     break;
+
                 case "x":
                 case "X":
                     this.#x = true;
@@ -41,20 +46,24 @@ export class KeyboardEventsManager {
 
         document.addEventListener("keyup", (event) => {
 
-            if (event.repeat) return false;
             switch(event.key) {
+
                 case "ArrowLeft":
                     this.#arrowLeft = false;
                     break;
+
                 case "ArrowRight":
                     this.#arrowRight = false;
                     break;
+
                 case "ArrowUp":
                     this.#arrowUp = false;
                     break;
+
                 case "Control":
                     this.#control = false;
                     break;
+
                 case "x":
                 case "X":
                     this.#x = false;

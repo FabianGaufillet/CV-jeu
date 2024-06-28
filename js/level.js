@@ -1,26 +1,23 @@
 "use strict";
 
 import {CanvasImage} from "./canvasImage.js";
+import {ROOT_PATH_DATA_LEVEL,ROOT_PATH_IMAGE_LEVEL} from "./constants.js";
 
 export class Level {
 
-    #rootPaths = {
-        "data": "./data/levels/",
-        "image": "./images/levels/"
-    };
-    #dataPath;
+    #dataFile;
     #data;
-    #imagePath;
+    #imageFile;
     #image;
     #canvasImage;
 
     constructor(name) {
-        this.#dataPath = `${this.#rootPaths["data"]}${name}.json`;
-        this.#imagePath = `${this.#rootPaths["image"]}${name}.svg`;
+        this.#dataFile = `${ROOT_PATH_DATA_LEVEL}${name}.json`;
+        this.#imageFile = `${ROOT_PATH_IMAGE_LEVEL}${name}.svg`;
     }
 
     loadData() {
-        return fetch(this.#dataPath)
+        return fetch(this.#dataFile)
             .then(res => res.json())
             .then(data => this.#data = data);
     }
@@ -30,7 +27,7 @@ export class Level {
             this.#image = new Image();
             this.#image.addEventListener("load", resolve);
             this.#image.addEventListener("error", reject);
-            this.#image.src = this.#imagePath;
+            this.#image.src = this.#imageFile;
         });
     }
 

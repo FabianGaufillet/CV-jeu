@@ -30,6 +30,22 @@ export class CanvasImage {
         }
     }
 
+    updatePositionInCanvas(canvasWidth,canvasHeight,velocityX,velocityY) {
+        this.#positionInCanvas["x"] += velocityX*canvasWidth;
+        this.#positionInCanvas["y"] += velocityY*canvasHeight;
+
+        if (this.#positionInCanvas["x"] + this.#sizeInCanvas["width"] < 0) {
+            this.#positionInCanvas["x"] = canvasWidth+this.#positionInCanvas["x"];
+        } else if (this.#positionInCanvas["x"] >= canvasWidth) {
+            this.#positionInCanvas["x"] = 0;
+        }
+
+        if (this.#positionInCanvas["y"] >= canvasHeight) {
+            this.#positionInCanvas["y"] = 0;
+        }
+
+    }
+
     get positionInCanvas() {
         return this.#positionInCanvas;
     }

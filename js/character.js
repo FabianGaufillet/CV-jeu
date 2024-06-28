@@ -2,13 +2,11 @@
 
 import {CanvasImage} from "./canvasImage.js";
 import {Sprite} from "./sprite.js";
+import {Velocity} from "./velocity.js";
+import {ROOT_PATH_DATA_CHARACTER,ROOT_PATH_IMAGE_CHARACTER} from "./constants.js";
 
 export class Character {
 
-    #rootPaths = {
-        "data": "./data/characters/",
-        "image": "./images/characters/"
-    };
     #dataFile;
     #data;
     #imagePath;
@@ -16,20 +14,15 @@ export class Character {
     #image;
     #sprites;
     #canvasImage;
-    #velocityX = 0;
-    #velocityY = 0;
     #onGround = true;
-    #maxVelocityX = {
-        "walk":0.004,
-        "run":0.01
-    };
-    #maxVelocityY = 0.03;
+    #velocities;
 
     constructor(type,state) {
-        this.#dataFile = `${this.#rootPaths["data"]}${type}.json`;
-        this.#imagePath = `${this.#rootPaths["image"]}${type}/`;
+        this.#dataFile = `${ROOT_PATH_DATA_CHARACTER}${type}.json`;
+        this.#imagePath = `${ROOT_PATH_IMAGE_CHARACTER}${type}/`;
         this.#imageFile = `${this.#imagePath}${state}.png`;
         this.#sprites = new Sprite(state,0);
+        this.#velocities = new Velocity();
     }
 
     loadData() {
@@ -67,54 +60,79 @@ export class Character {
         });
     }
 
-    updatePositionOfCharacter(canvasWidth,canvasHeight) {
-        const currentState = this.#sprites.currentState;
-        this.#setNextSprite(currentState);
-        this.#updateVelocities(currentState,canvasWidth,canvasHeight);
+    static updatePositionsOfCharacters(canvasWidth,canvasHeight,...characters) {
+        for (const character of characters) {
+            const currentState = character.sprites.currentState;
+            character.#setNextSprite(currentState);
+            character.#velocities.updateVelocities(
+                character.onGround,
+                currentState,
+                character.#data[currentState]["velocityX"],
+                character.#data[currentState]["velocityY"]
+            );
+            character.#canvasImage.updatePositionInCanvas(
+                canvasWidth,
+                canvasHeight,
+                character.#velocities.velocityX,
+                character.#velocities.velocityY
+            );
+        }
     }
 
     #setNextSprite(currentState) {
         const nextSprite = this.#sprites.getNextSprite(this.#data[currentState]["moves"]);
-        this.#canvasImage.positionOfSourceImage = {"x":nextSprite["x"],"y":nextSprite["y"]};
+        this.#canvasImage.positionOfSourceImage = {
+            "x":nextSprite["x"],
+            "y":nextSprite["y"]
+        };
     }
 
-    #updateVelocities(currentState,canvasWidth,canvasHeight) {
-        this.#velocityX += this.#onGround ? this.#data[currentState]["velocityX"]*canvasWidth : 0;
-        if ((currentState.startsWith("idle") || currentState.startsWith("attack")) && this.#onGround) {
-            this.#velocityX = this.#velocityX > 0 ? Math.floor(this.#velocityX / 2)
-                            : this.#velocityX < 0 ? Math.ceil(this.#velocityX / 2)
-                            : this.#velocityX;
-        } else if (currentState === "walkL") {
-            this.#velocityX = Math.max(this.#velocityX, -this.#maxVelocityX["walk"]*canvasWidth);
-        } else if (currentState === "walkR") {
-            this.#velocityX = Math.min(this.#velocityX, this.#maxVelocityX["walk"]*canvasWidth);
-        } else if (currentState === "runL") {
-            this.#velocityX = Math.max(this.#velocityX, -this.#maxVelocityX["run"]*canvasWidth);
-        } else if (currentState === "runR") {
-            this.#velocityX = Math.min(this.#velocityX, this.#maxVelocityX["run"]*canvasWidth);
+    setNextStateOfCharacter(keysPressed) {
+        const keysPressedEntries = Object.entries(keysPressed),
+              isKeyPressed = keysPressedEntries.filter(entry=> entry[0] !== "control" && entry[1]).length;
+
+        if (this.onGround) {
+            if (!this.sprites.currentState.startsWith("idle") && !isKeyPressed) {
+                if (this.sprites.currentState.endsWith("L")) this.updateStateOfCharacter("idleL");
+                else if (this.sprites.currentState.endsWith("R")) this.updateStateOfCharacter("idleR");
+                return false;
+            }
+
+            if (keysPressed["arrowLeft"] && !keysPressed["x"]) {
+                if (!keysPressed["control"] && this.sprites.currentState !== "walkL") {
+                    this.updateStateOfCharacter("walkL");
+                } else if (keysPressed["control"] && this.sprites.currentState !== "runL") {
+                    this.updateStateOfCharacter("runL");
+                }
+            }
+
+            if (keysPressed["arrowRight"] && !keysPressed["x"]) {
+                if (!keysPressed["control"] && this.sprites.currentState !== "walkR") {
+                    this.updateStateOfCharacter("walkR");
+                } else if (keysPressed["control"] && this.sprites.currentState !== "runR") {
+                    this.updateStateOfCharacter("runR");
+                }
+            }
+
+            if (keysPressed["arrowUp"]) {
+                if (this.sprites.currentState.endsWith("L")) this.updateStateOfCharacter("jumpL");
+                else if (this.sprites.currentState.endsWith("R")) this.updateStateOfCharacter("jumpR");
+            }
+
+            if (keysPressed["x"]) {
+                if (this.sprites.currentState.endsWith("L") && this.sprites.currentState !== "attackL") this.updateStateOfCharacter("attackL");
+                else if (this.sprites.currentState.endsWith("R") && this.sprites.currentState !== "attackR" ) this.updateStateOfCharacter("attackR");
+            }
+
+        } else {
+            if (keysPressed["x"]) {
+                if (this.sprites.currentState.endsWith("L") && this.sprites.currentState !== "jumpAttackL") this.updateStateOfCharacter("jumpAttackL");
+                else if (this.sprites.currentState.endsWith("R") && this.sprites.currentState !== "jumpAttackR" ) this.updateStateOfCharacter("jumpAttackR");
+            } else {
+                if (this.sprites.currentState.endsWith("L") && this.sprites.currentState !== "jumpL") this.updateStateOfCharacter("jumpL");
+                else if (this.sprites.currentState.endsWith("R") && this.sprites.currentState !== "jumpR" ) this.updateStateOfCharacter("jumpR");
+            }
         }
-
-        if (this.#onGround) {
-            if (currentState.startsWith("jump")) this.#velocityY += this.#data[currentState]["velocityY"]*canvasHeight;
-            else this.#velocityY = 0;
-        } else this.#velocityY += 0.0025*canvasHeight;
-
-        if (this.#velocityY < 0) this.#velocityY = Math.max(this.#velocityY,-this.#maxVelocityY*canvasHeight);
-        else if (this.#velocityY > 0) this.#velocityY = Math.min(this.#velocityY,this.#maxVelocityY*canvasHeight);
-
-        this.#canvasImage.positionInCanvas["x"] += this.#velocityX;
-        this.#canvasImage.positionInCanvas["y"] += this.#velocityY;
-
-        if (this.#canvasImage.positionInCanvas["x"] + this.#canvasImage.sizeInCanvas["width"] < 0) {
-            this.#canvasImage.positionInCanvas["x"] = canvasWidth+this.#canvasImage.positionInCanvas["x"];
-        } else if (this.#canvasImage.positionInCanvas["x"] >= canvasWidth) {
-            this.#canvasImage.positionInCanvas["x"] = 0;
-        }
-
-        if (this.#canvasImage.positionInCanvas["y"] >= canvasHeight) {
-            this.#canvasImage.positionInCanvas["y"] = 0;
-        }
-
     }
 
     updateStateOfCharacter(state) {
@@ -123,20 +141,22 @@ export class Character {
         this.#sprites.currentIndexOfSprite = 0;
     }
 
-    isOnGround(groundList,canvasWidth,canvasHeight) {
-        const characterPosition = this.#canvasImage.positionInCanvas["x"] + this.#canvasImage.sizeInCanvas["width"]/2;
-        let isCharacterOnGround = false;
+    static updateOnGroundStatus(groundList,canvasWidth,canvasHeight,...characters) {
+        for (const character of characters) {
+            const characterPosition = character.canvasImage.positionInCanvas["x"] + character.canvasImage.sizeInCanvas["width"]/2,
+                  bottom = character.canvasImage.positionInCanvas["y"]+character.canvasImage.sizeInCanvas["height"];
+            let isCharacterOnGround = false;
 
-        for (const ground of groundList) {
-            if (characterPosition >= ground["x"]*canvasWidth && characterPosition <= (ground["x"]+ground["w"])*canvasWidth) {
-                const bottom = this.#canvasImage.positionInCanvas["y"]+this.#canvasImage.sizeInCanvas["height"];
-                if (bottom >= ground["y"]*canvasHeight && bottom <= (ground["y"]+ground["h"])*canvasHeight) {
-                    isCharacterOnGround = true;
-                    break;
+            for (const ground of groundList) {
+                if (characterPosition >= ground["x"]*canvasWidth && characterPosition <= (ground["x"]+ground["w"])*canvasWidth) {
+                    if (bottom >= ground["y"]*canvasHeight && bottom <= (ground["y"]+ground["h"])*canvasHeight) {
+                        isCharacterOnGround = true;
+                        break;
+                    }
                 }
             }
+            character.#onGround = isCharacterOnGround;
         }
-        this.#onGround = isCharacterOnGround;
     }
 
     get image() {
