@@ -1,7 +1,5 @@
 "use strict";
 
-import {CanvasElement} from "./canvasElement.js";
-
 export class CanvasImage {
 
     #positionInCanvas;
@@ -33,16 +31,16 @@ export class CanvasImage {
     }
 
     updatePositionInCanvas(velocityX,velocityY) {
-        this.#positionInCanvas["x"] += velocityX*CanvasElement.width;
-        this.#positionInCanvas["y"] += velocityY*CanvasElement.height;
+        this.#positionInCanvas["x"] += velocityX;
+        this.#positionInCanvas["y"] += velocityY;
 
         if (this.#positionInCanvas["x"] + this.#sizeInCanvas["width"] < 0) {
-            this.#positionInCanvas["x"] = CanvasElement.width+this.#positionInCanvas["x"];
-        } else if (this.#positionInCanvas["x"] >= CanvasElement.width) {
+            this.#positionInCanvas["x"] = 1+this.#positionInCanvas["x"];
+        } else if (this.#positionInCanvas["x"] >= 1) {
             this.#positionInCanvas["x"] = 0;
         }
 
-        if (this.#positionInCanvas["y"] >= CanvasElement.height) {
+        if (this.#positionInCanvas["y"] >= 1) {
             this.#positionInCanvas["y"] = 0;
         }
     }

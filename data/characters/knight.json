@@ -1,6 +1,6 @@
 {
   "idleL":{
-    "velocityX":0,
+    "velocityX": 0,
     "velocityY": 0,
     "moves":[
       {"x":5283,"y":0,"w":587,"h":707},
@@ -15,7 +15,7 @@
       {"x":0,"y":0,"w":587,"h":707}
     ]},
   "idleR":{
-    "velocityX":0,
+    "velocityX": 0,
     "velocityY": 0,
     "moves":[
       {"x":0,"y":0,"w":587,"h":707},
@@ -30,7 +30,7 @@
       {"x":5283,"y":0,"w":587,"h":707}
     ]},
   "walkL":{
-    "velocityX":-0.001,
+    "velocityX": -0.001,
     "velocityY": 0,
     "moves":[
       {"x":5283,"y":0,"w":587,"h":707},
@@ -45,7 +45,7 @@
       {"x":0,"y":0,"w":587,"h":707}
     ]},
   "walkR":{
-    "velocityX":0.001,
+    "velocityX": 0.001,
     "velocityY": 0,
     "moves":[
       {"x":0,"y":0,"w":587,"h":707},
@@ -60,7 +60,7 @@
       {"x":5283,"y":0,"w":587,"h":707}
     ]},
   "runL":{
-    "velocityX":-0.002,
+    "velocityX": -0.002,
     "velocityY": 0,
     "moves":[
       {"x":5283,"y":0,"w":587,"h":707},
@@ -75,7 +75,7 @@
       {"x":0,"y":0,"w":587,"h":707}
     ]},
   "runR":{
-    "velocityX":0.002,
+    "velocityX": 0.002,
     "velocityY": 0,
     "moves":[
       {"x":0,"y":0,"w":587,"h":707},
@@ -90,7 +90,7 @@
       {"x":5283,"y":0,"w":587,"h":707}
     ]},
   "attackL":{
-    "velocityX":0,
+    "velocityX": 0,
     "velocityY": 0,
     "moves":[
       {"x":5283,"y":0,"w":587,"h":707},
@@ -105,7 +105,7 @@
       {"x":0,"y":0,"w":587,"h":707}
     ]},
   "attackR":{
-    "velocityX":0,
+    "velocityX": 0,
     "velocityY": 0,
     "moves":[
       {"x":0,"y":0,"w":587,"h":707},
@@ -120,7 +120,7 @@
       {"x":5283,"y":0,"w":587,"h":707}
     ]},
   "jumpR":{
-    "velocityX":0,
+    "velocityX": 0,
     "velocityY": -0.03,
     "moves":[
       {"x":0,"y":0,"w":587,"h":707},
@@ -135,7 +135,7 @@
       {"x":5283,"y":0,"w":587,"h":707}
     ]},
   "jumpL":{
-    "velocityX":0,
+    "velocityX": 0,
     "velocityY": -0.03,
     "moves":[
       {"x":5283,"y":0,"w":587,"h":707},
@@ -150,7 +150,7 @@
       {"x":0,"y":0,"w":587,"h":707}
     ]},
   "jumpAttackR":{
-    "velocityX":0,
+    "velocityX": 0,
     "velocityY": -0.02,
     "moves":[
       {"x":0,"y":0,"w":587,"h":707},
@@ -165,7 +165,7 @@
       {"x":5283,"y":0,"w":587,"h":707}
     ]},
   "jumpAttackL":{
-    "velocityX":0,
+    "velocityX": 0,
     "velocityY": -0.02,
     "moves":[
       {"x":5283,"y":0,"w":587,"h":707},

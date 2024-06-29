@@ -1,9 +1,15 @@
 "use strict";
 
-import {CanvasImage} from "./canvasImage.js";
-import {Sprite} from "./sprite.js";
+import {CanvasImage} from "../drawing/canvasImage.js";
+import {Sprite} from "../drawing/sprite.js";
 import {Velocity} from "./velocity.js";
-import {ROOT_PATH_DATA_CHARACTER,ROOT_PATH_IMAGE_CHARACTER} from "./constants.js";
+import {
+    WIDTH_OF_CHARACTERS_IN_CANVAS,
+    HEIGHT_OF_CHARACTERS_IN_CANVAS,
+    MAX_FALLING_TIME,
+    ROOT_PATH_DATA_CHARACTER,
+    ROOT_PATH_IMAGE_CHARACTER
+} from "../constants.js";
 
 export class Character {
 
@@ -17,6 +23,7 @@ export class Character {
     #onGround = true;
     #isDead = false;
     #velocities;
+    #fallingTime = null;
 
     constructor(type,state) {
         this.#dataFile = `${ROOT_PATH_DATA_CHARACTER}${type}.json`;
@@ -41,7 +48,7 @@ export class Character {
         });
     }
 
-    initCanvasImage(initialPositionOfCharacter,canvasWidth,canvasHeight) {
+    initCanvasImage() {
         const currentState = this.#sprites["currentState"],
               moves = this.#data[currentState]["moves"];
 
@@ -53,15 +60,15 @@ export class Character {
                 "h":moves[0]["h"]
             },
             "canvas":{
-                "x":initialPositionOfCharacter["x"]*canvasWidth,
-                "y":initialPositionOfCharacter["y"]*canvasHeight,
-                "w":initialPositionOfCharacter["w"]*canvasWidth,
-                "h":initialPositionOfCharacter["h"]*canvasHeight
+                "x":Math.random(),
+                "y":Math.random(),
+                "w":WIDTH_OF_CHARACTERS_IN_CANVAS,
+                "h":HEIGHT_OF_CHARACTERS_IN_CANVAS
             }
         });
     }
 
-    setNextStateOfCharacter(keysPressed) {
+    setNextStateOfPlayer(keysPressed) {
         const keysPressedEntries = Object.entries(keysPressed),
               isKeyPressed = keysPressedEntries.filter(entry=> entry[0] !== "control" && entry[1]).length,
               characterOrientation = this.sprites.currentState.at(-1);
@@ -70,7 +77,7 @@ export class Character {
             if (!this.sprites.currentState.startsWith("dead")) this.updateStateOfCharacter("dead"+characterOrientation);
             return false;
         }
-        if (this.onGround) {
+        if (this.#onGround) {
             if (!this.sprites.currentState.startsWith("idle") && !isKeyPressed) {
                 this.updateStateOfCharacter("idle"+characterOrientation);
                 return false;
@@ -96,10 +103,8 @@ export class Character {
                 this.updateStateOfCharacter("jump"+characterOrientation);
             }
 
-            if (keysPressed["x"]) {
-                if (!this.sprites.currentState.startsWith("attack")) {
-                    this.updateStateOfCharacter("attack"+characterOrientation);
-                }
+            if (keysPressed["x"] && !this.sprites.currentState.startsWith("attack")) {
+                this.updateStateOfCharacter("attack"+characterOrientation);
             }
         } else {
             if (keysPressed["x"]) {
@@ -114,12 +119,12 @@ export class Character {
         }
     }
 
-    static updatePositionsOfCharacters(canvasWidth,canvasHeight,...characters) {
+    static updatePositionsOfCharacters(...characters) {
         for (const character of characters) {
             const currentState = character.sprites.currentState;
             character.#setNextSprite(currentState);
             character.#velocities.updateVelocities(
-                character.onGround,
+                character.#onGround,
                 currentState,
                 character.#data[currentState]["velocityX"],
                 character.#data[currentState]["velocityY"]
@@ -142,21 +147,27 @@ export class Character {
         this.#sprites.currentIndexOfSprite = 0;
     }
 
-    static updateOnGroundStatus(groundList,canvasWidth,canvasHeight,...characters) {
+    static updateOnGroundStatus(groundList,...characters) {
         for (const character of characters) {
             const characterPosition = character.canvasImage.positionInCanvas["x"] + character.canvasImage.sizeInCanvas["width"] / 2,
                   bottom = character.canvasImage.positionInCanvas["y"] + character.canvasImage.sizeInCanvas["height"];
             let isCharacterOnGround = false;
 
             for (const ground of groundList) {
-                if (characterPosition >= ground["x"]*canvasWidth && characterPosition <= (ground["x"]+ground["w"])*canvasWidth) {
-                    if (bottom >= ground["y"]*canvasHeight && bottom <= (ground["y"]+ground["h"])*canvasHeight) {
+                if (characterPosition >= ground["x"] && characterPosition <= ground["x"]+ground["w"]) {
+                    if (bottom >= ground["y"] && bottom <= ground["y"]+ground["h"]) {
                         isCharacterOnGround = true;
                         break;
                     }
                 }
             }
             character.#onGround = isCharacterOnGround;
+            if (isCharacterOnGround) character.#fallingTime = null;
+            else if (character.#fallingTime === null) character.#fallingTime = Date.now();
+            else if (Date.now() - character.#fallingTime > MAX_FALLING_TIME) {
+                    character.#canvasImage.updatePositionInCanvas(Math.random(),Math.random());
+                    character.#fallingTime = null;
+            }
         }
     }
 
@@ -183,10 +194,6 @@ export class Character {
     set imageFile(state) {
         this.#imageFile = `${this.#imagePath}${state}.png`;
         this.#image.src = this.#imageFile;
-    }
-
-    get onGround() {
-        return this.#onGround;
     }
 
     get isDead() {

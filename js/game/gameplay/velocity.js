@@ -1,6 +1,6 @@
 "use strict";
 
-import {WALK_MAXVELOCITY, RUN_MAXVELOCITY, FALL_MAXVELOCITY, GRAVITY, FRICTION_COEFFICIENT} from "./constants.js";
+import {WALK_MAXVELOCITY, RUN_MAXVELOCITY, FALL_MAXVELOCITY, GRAVITY, FRICTION_COEFFICIENT} from "../constants.js";
 
 export class Velocity {
 
