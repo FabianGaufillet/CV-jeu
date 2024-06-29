@@ -1,5 +1,7 @@
 "use strict";
 
+import {CanvasElement} from "./canvasElement.js";
+
 export class CanvasImage {
 
     #positionInCanvas;
@@ -30,20 +32,30 @@ export class CanvasImage {
         }
     }
 
-    updatePositionInCanvas(canvasWidth,canvasHeight,velocityX,velocityY) {
-        this.#positionInCanvas["x"] += velocityX*canvasWidth;
-        this.#positionInCanvas["y"] += velocityY*canvasHeight;
+    updatePositionInCanvas(velocityX,velocityY) {
+        this.#positionInCanvas["x"] += velocityX*CanvasElement.width;
+        this.#positionInCanvas["y"] += velocityY*CanvasElement.height;
 
         if (this.#positionInCanvas["x"] + this.#sizeInCanvas["width"] < 0) {
-            this.#positionInCanvas["x"] = canvasWidth+this.#positionInCanvas["x"];
-        } else if (this.#positionInCanvas["x"] >= canvasWidth) {
+            this.#positionInCanvas["x"] = CanvasElement.width+this.#positionInCanvas["x"];
+        } else if (this.#positionInCanvas["x"] >= CanvasElement.width) {
             this.#positionInCanvas["x"] = 0;
         }
 
-        if (this.#positionInCanvas["y"] >= canvasHeight) {
+        if (this.#positionInCanvas["y"] >= CanvasElement.height) {
             this.#positionInCanvas["y"] = 0;
         }
+    }
 
+    updatePositionAndSizeOfSourceImage(sourceImage) {
+        this.#positionOfSourceImage = {
+            "x":sourceImage["x"],
+            "y":sourceImage["y"]
+        };
+        this.#sizeOfSourceImage = {
+            "width":sourceImage["w"],
+            "height":sourceImage["h"]
+        };
     }
 
     get positionInCanvas() {
@@ -62,12 +74,12 @@ export class CanvasImage {
         return this.#sizeOfSourceImage;
     }
 
-    set positionOfSourceImage(position) {
-        this.#positionOfSourceImage = position;
-    }
-
     set positionInCanvas(position) {
         this.#positionInCanvas = position;
+    }
+
+    set sizeOfSourceImage(size) {
+        this.#sizeOfSourceImage = size;
     }
 
 }

@@ -12,7 +12,9 @@ export class Sprite {
 
     getNextSprite(sprites) {
         const previousIndexOfSprite = this.#currentIndexOfSprite;
-        this.#currentIndexOfSprite = (this.#currentIndexOfSprite + 1)%sprites.length;
+        if (!(previousIndexOfSprite === sprites.length-1 && this.#currentState.startsWith("dead"))) {
+            this.#currentIndexOfSprite = (this.#currentIndexOfSprite + 1)%sprites.length;
+        }
         return sprites[previousIndexOfSprite];
     }
 

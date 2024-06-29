@@ -180,7 +180,7 @@
       {"x":0,"y":0,"w":587,"h":707}
     ]},
   "deadL":{
-    "velocityX":0.025,
+    "velocityX": 0,
     "velocityY": 0,
     "moves":[
       {"x":8496,"y":0,"w":944,"h":751},
@@ -195,7 +195,7 @@
       {"x":0,"y":0,"w":944,"h":751}
     ]},
   "deadR":{
-    "velocityX":-0.025,
+    "velocityX": 0,
     "velocityY": 0,
     "moves":[
       {"x":0,"y":0,"w":944,"h":751},

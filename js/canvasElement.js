@@ -2,21 +2,24 @@
 
 export class CanvasElement {
 
-    #width;
-    #height;
+    static width;
+    static height;
     #context;
 
     constructor(htmlCanvasElement) {
-        this.#width = htmlCanvasElement.width;
-        this.#height = htmlCanvasElement.height;
         this.#context = this.#getContext(htmlCanvasElement);
+    }
+
+    static init({width, height}) {
+        this.width = width;
+        this.height = height;
     }
 
     #getContext(htmlCanvasElement) {
         return htmlCanvasElement.getContext("2d");
     }
 
-    clearRect(x=0,y=0,width=this.#width,height=this.#height) {
+    clearRect(x=0,y=0,width=CanvasElement.width,height=CanvasElement.height) {
         this.#context.clearRect(x, y, width, height);
     }
 
@@ -43,14 +46,6 @@ export class CanvasElement {
                     element.canvasImage.sizeInCanvas.height);
             }
         }
-    }
-
-    get width() {
-        return this.#width;
-    }
-
-    get height() {
-        return this.#height;
     }
 
 }

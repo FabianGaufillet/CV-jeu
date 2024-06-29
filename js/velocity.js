@@ -20,7 +20,9 @@ export class Velocity {
     #updateVelocityX(onGround, currentState, velocityXIncrement) {
         this.#velocityX += onGround ? velocityXIncrement : 0;
 
-        if (currentState.startsWith("idle") || currentState.startsWith("attack")) {
+        if (currentState.startsWith("dead")) {
+            this.#velocityX = 0;
+        } else if (currentState.startsWith("idle") || currentState.startsWith("attack")) {
             this.#velocityX *= FRICTION_COEFFICIENT;
         } else if (currentState === "walkL") {
             this.#velocityX = Math.max(this.#velocityX, -WALK_MAXVELOCITY);

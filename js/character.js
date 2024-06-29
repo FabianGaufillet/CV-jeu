@@ -15,6 +15,7 @@ export class Character {
     #sprites;
     #canvasImage;
     #onGround = true;
+    #isDead = false;
     #velocities;
 
     constructor(type,state) {
@@ -60,41 +61,18 @@ export class Character {
         });
     }
 
-    static updatePositionsOfCharacters(canvasWidth,canvasHeight,...characters) {
-        for (const character of characters) {
-            const currentState = character.sprites.currentState;
-            character.#setNextSprite(currentState);
-            character.#velocities.updateVelocities(
-                character.onGround,
-                currentState,
-                character.#data[currentState]["velocityX"],
-                character.#data[currentState]["velocityY"]
-            );
-            character.#canvasImage.updatePositionInCanvas(
-                canvasWidth,
-                canvasHeight,
-                character.#velocities.velocityX,
-                character.#velocities.velocityY
-            );
-        }
-    }
-
-    #setNextSprite(currentState) {
-        const nextSprite = this.#sprites.getNextSprite(this.#data[currentState]["moves"]);
-        this.#canvasImage.positionOfSourceImage = {
-            "x":nextSprite["x"],
-            "y":nextSprite["y"]
-        };
-    }
-
     setNextStateOfCharacter(keysPressed) {
         const keysPressedEntries = Object.entries(keysPressed),
-              isKeyPressed = keysPressedEntries.filter(entry=> entry[0] !== "control" && entry[1]).length;
+              isKeyPressed = keysPressedEntries.filter(entry=> entry[0] !== "control" && entry[1]).length,
+              characterOrientation = this.sprites.currentState.at(-1);
 
+        if (this.#isDead) {
+            if (!this.sprites.currentState.startsWith("dead")) this.updateStateOfCharacter("dead"+characterOrientation);
+            return false;
+        }
         if (this.onGround) {
             if (!this.sprites.currentState.startsWith("idle") && !isKeyPressed) {
-                if (this.sprites.currentState.endsWith("L")) this.updateStateOfCharacter("idleL");
-                else if (this.sprites.currentState.endsWith("R")) this.updateStateOfCharacter("idleR");
+                this.updateStateOfCharacter("idle"+characterOrientation);
                 return false;
             }
 
@@ -115,24 +93,47 @@ export class Character {
             }
 
             if (keysPressed["arrowUp"]) {
-                if (this.sprites.currentState.endsWith("L")) this.updateStateOfCharacter("jumpL");
-                else if (this.sprites.currentState.endsWith("R")) this.updateStateOfCharacter("jumpR");
+                this.updateStateOfCharacter("jump"+characterOrientation);
             }
 
             if (keysPressed["x"]) {
-                if (this.sprites.currentState.endsWith("L") && this.sprites.currentState !== "attackL") this.updateStateOfCharacter("attackL");
-                else if (this.sprites.currentState.endsWith("R") && this.sprites.currentState !== "attackR" ) this.updateStateOfCharacter("attackR");
+                if (!this.sprites.currentState.startsWith("attack")) {
+                    this.updateStateOfCharacter("attack"+characterOrientation);
+                }
             }
-
         } else {
             if (keysPressed["x"]) {
-                if (this.sprites.currentState.endsWith("L") && this.sprites.currentState !== "jumpAttackL") this.updateStateOfCharacter("jumpAttackL");
-                else if (this.sprites.currentState.endsWith("R") && this.sprites.currentState !== "jumpAttackR" ) this.updateStateOfCharacter("jumpAttackR");
+                if (!this.sprites.currentState.startsWith("jumpAttack")) {
+                    this.updateStateOfCharacter("jumpAttack"+characterOrientation);
+                }
             } else {
-                if (this.sprites.currentState.endsWith("L") && this.sprites.currentState !== "jumpL") this.updateStateOfCharacter("jumpL");
-                else if (this.sprites.currentState.endsWith("R") && this.sprites.currentState !== "jumpR" ) this.updateStateOfCharacter("jumpR");
+                if (!this.sprites.currentState.startsWith("jump")) {
+                    this.updateStateOfCharacter("jump"+characterOrientation);
+                }
             }
         }
+    }
+
+    static updatePositionsOfCharacters(canvasWidth,canvasHeight,...characters) {
+        for (const character of characters) {
+            const currentState = character.sprites.currentState;
+            character.#setNextSprite(currentState);
+            character.#velocities.updateVelocities(
+                character.onGround,
+                currentState,
+                character.#data[currentState]["velocityX"],
+                character.#data[currentState]["velocityY"]
+            );
+            character.#canvasImage.updatePositionInCanvas(
+                character.#velocities.velocityX,
+                character.#velocities.velocityY
+            );
+        }
+    }
+
+    #setNextSprite(currentState) {
+        const nextSprite = this.#sprites.getNextSprite(this.#data[currentState]["moves"]);
+        this.#canvasImage.updatePositionAndSizeOfSourceImage(nextSprite);
     }
 
     updateStateOfCharacter(state) {
@@ -143,8 +144,8 @@ export class Character {
 
     static updateOnGroundStatus(groundList,canvasWidth,canvasHeight,...characters) {
         for (const character of characters) {
-            const characterPosition = character.canvasImage.positionInCanvas["x"] + character.canvasImage.sizeInCanvas["width"]/2,
-                  bottom = character.canvasImage.positionInCanvas["y"]+character.canvasImage.sizeInCanvas["height"];
+            const characterPosition = character.canvasImage.positionInCanvas["x"] + character.canvasImage.sizeInCanvas["width"] / 2,
+                  bottom = character.canvasImage.positionInCanvas["y"] + character.canvasImage.sizeInCanvas["height"];
             let isCharacterOnGround = false;
 
             for (const ground of groundList) {
@@ -157,6 +158,14 @@ export class Character {
             }
             character.#onGround = isCharacterOnGround;
         }
+    }
+
+    comeBackToLife(status,delay) {
+        setTimeout(() => {
+            this.isDead = false;
+            this.updateStateOfCharacter(status);
+            this.#canvasImage.updatePositionInCanvas(Math.random(),Math.random());
+        },delay);
     }
 
     get image() {
@@ -178,6 +187,14 @@ export class Character {
 
     get onGround() {
         return this.#onGround;
+    }
+
+    get isDead() {
+        return this.#isDead;
+    }
+
+    set isDead(deadStatus) {
+        this.#isDead = deadStatus;
     }
 
 }
