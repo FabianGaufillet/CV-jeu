@@ -1,5 +1,6 @@
 "use strict";
 
+export const MAX_ENEMIES = 5;
 export const WIDTH_OF_CHARACTERS_IN_CANVAS = 0.08;
 export const HEIGHT_OF_CHARACTERS_IN_CANVAS = 0.12;
 export const ROOT_PATH_DATA_CHARACTER = "./data/characters/";
