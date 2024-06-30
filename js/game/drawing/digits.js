@@ -8,18 +8,18 @@ import {
     SCORE_POSITION_Y,
     SCORE_WIDTH,
     SCORE_HEIGHT
-} from "../constants.js";
+} from "./constants.js";
 import {Sprite} from "./sprite.js";
 import {CanvasImage} from "./canvasImage.js";
 
 export class Digits {
 
-    #canvasImage;
     #dataFile;
     #imageFile;
-    #image;
     #sprites;
     #numbers;
+    #image;
+    #canvasImage;
 
     constructor() {
         this.#dataFile = `${ROOT_PATH_DATA_NUMBERS}numbers.json`;
@@ -59,16 +59,16 @@ export class Digits {
         });
     }
 
+    get numbers() {
+        return this.#numbers;
+    }
+
     get image() {
         return this.#image;
     }
 
     get canvasImage() {
         return this.#canvasImage;
-    }
-
-    get numbers() {
-        return this.#numbers;
     }
 
 }

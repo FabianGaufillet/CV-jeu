@@ -1,56 +1,60 @@
 "use strict";
 
+import {GAME_REFRESH_RATE} from "./constants.js";
 import {CanvasElement} from "../drawing/canvasElement.js";
-import {KeyboardEventsManager} from "../eventsManagers/keyboardEventsManager.js";
 import {Character} from "./character.js";
 import {CollisionsManager} from "../eventsManagers/collisionsManager.js";
 import {Score} from "../drawing/score.js";
-import {GAME_REFRESH_RATE} from "../constants.js";
+import {Level} from "./level.js";
+import {KeysPressedManager} from "../eventsManagers/keysPressedManager.js";
 
 export class Game {
 
     #canvasElement;
-    #level;
+    #levels;
+    #digits;
     #player;
     #enemies;
-    #setIntervalID;
-    #keyboardEventsManager;
+    #keysPressedManager
     #collisionHandler;
-    #digits;
     #score;
+    #requestAnimationFrameID;
+    #lastRefresh = Date.now();
 
-    constructor(htmlCanvasElement,level,digits,player,enemies) {
-        CanvasElement.init(htmlCanvasElement);
+    constructor(htmlCanvasElement,levels,digits,player,enemies) {
         this.#canvasElement = new CanvasElement(htmlCanvasElement);
-        this.#level = level;
+        this.#levels = levels;
         this.#digits = digits;
         this.#player = player;
         this.#enemies = enemies;
-        this.#keyboardEventsManager = new KeyboardEventsManager();
+        this.#keysPressedManager = new KeysPressedManager();
         this.#collisionHandler = new CollisionsManager(this.#player);
         this.#score = new Score(this.#digits);
     }
 
     loadGameData() {
         return [
-            this.#level.loadData(),
-            ...this.#digits.map(digit => digit.loadData()),
-            ...this.#digits.map(digit => digit.loadImage()),
             this.#player.loadData(),
             this.#player.loadImage(),
+            ...this.#levels.map(level => level.loadData()),
+            ...this.#digits.map(digit => digit.loadData()),
+            ...this.#digits.map(digit => digit.loadImage()),
             ...this.#enemies.map(enemy => enemy.loadData()),
             ...this.#enemies.map(enemy => enemy.loadImage())
         ];
     }
 
     loop() {
-        this.#setIntervalID = setInterval(() => {
-            this.#player.setNextStateOfPlayer(this.#keyboardEventsManager.keyPressed);
+        if (Date.now() - this.#lastRefresh >= GAME_REFRESH_RATE) {
+            this.#lastRefresh = Date.now();
+            this.#keysPressedManager.manageKeysPressed(this.#player);
             Character.updatePositionsOfCharacters(this.#player, ...this.#enemies);
-            this.#canvasElement.drawImage(...this.#digits,...this.#enemies,this.#player);
-            Character.updateOnGroundStatus(this.#level.ground, this.#player, ...this.#enemies);
+            Level.levelSelection(this.#score.currentScore,this.#canvasElement);
+            this.#levels[Level.currentLevel].ground.isCharacterOnGround(this.#player, ...this.#enemies);
             this.#collisionHandler.detectCollision(this.#enemies,this.#score);
-        },GAME_REFRESH_RATE);
+            this.#canvasElement.drawImage(...this.#digits,...this.#enemies,this.#player);
+        }
+        this.#requestAnimationFrameID = requestAnimationFrame(() => this.loop());
     }
 
 }

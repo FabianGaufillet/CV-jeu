@@ -3,8 +3,8 @@
 export class CanvasImage {
 
     #positionInCanvas;
-    #positionOfSourceImage;
     #sizeInCanvas;
+    #positionOfSourceImage;
     #sizeOfSourceImage;
 
     constructor(imageData) {
@@ -60,20 +60,20 @@ export class CanvasImage {
         return this.#positionInCanvas;
     }
 
-    get positionOfSourceImage() {
-        return this.#positionOfSourceImage;
+    set positionInCanvas(position) {
+        this.#positionInCanvas = position;
     }
 
     get sizeInCanvas() {
         return this.#sizeInCanvas;
     }
 
-    get sizeOfSourceImage() {
-        return this.#sizeOfSourceImage;
+    get positionOfSourceImage() {
+        return this.#positionOfSourceImage;
     }
 
-    set positionInCanvas(position) {
-        this.#positionInCanvas = position;
+    get sizeOfSourceImage() {
+        return this.#sizeOfSourceImage;
     }
 
     set sizeOfSourceImage(size) {

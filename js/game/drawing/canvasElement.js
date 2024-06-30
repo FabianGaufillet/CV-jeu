@@ -2,24 +2,23 @@
 
 export class CanvasElement {
 
-    static width;
-    static height;
+    htmlCanvasElement;
+    width;
+    height;
     #context;
 
     constructor(htmlCanvasElement) {
+        this.htmlCanvasElement = htmlCanvasElement;
+        this.width = htmlCanvasElement.width;
+        this.height = htmlCanvasElement.height;
         this.#context = this.#getContext(htmlCanvasElement);
-    }
-
-    static init({width, height}) {
-        this.width = width;
-        this.height = height;
     }
 
     #getContext(htmlCanvasElement) {
         return htmlCanvasElement.getContext("2d");
     }
 
-    clearRect(x= 0, y= 0, width = CanvasElement.width, height = CanvasElement.height) {
+    clearRect(x= 0, y= 0, width = this.width, height = this.height) {
         this.#context.clearRect(x, y, width, height);
     }
 
@@ -29,10 +28,10 @@ export class CanvasElement {
             if (element.canvasImage.positionOfSourceImage === undefined || element.canvasImage.sizeOfSourceImage === undefined) {
                 this.#context.drawImage(
                     element.image,
-                    element.canvasImage.positionInCanvas.x*CanvasElement.width,
-                    element.canvasImage.positionInCanvas.y*CanvasElement.height,
-                    element.canvasImage.sizeInCanvas.width*CanvasElement.width,
-                    element.canvasImage.sizeInCanvas.height*CanvasElement.height);
+                    element.canvasImage.positionInCanvas.x*this.width,
+                    element.canvasImage.positionInCanvas.y*this.height,
+                    element.canvasImage.sizeInCanvas.width*this.width,
+                    element.canvasImage.sizeInCanvas.height*this.height);
             } else {
                 this.#context.drawImage(
                     element.image,
@@ -40,10 +39,10 @@ export class CanvasElement {
                     element.canvasImage.positionOfSourceImage.y,
                     element.canvasImage.sizeOfSourceImage.width,
                     element.canvasImage.sizeOfSourceImage.height,
-                    element.canvasImage.positionInCanvas.x*CanvasElement.width,
-                    element.canvasImage.positionInCanvas.y*CanvasElement.height,
-                    element.canvasImage.sizeInCanvas.width*CanvasElement.width,
-                    element.canvasImage.sizeInCanvas.height*CanvasElement.height);
+                    element.canvasImage.positionInCanvas.x*this.width,
+                    element.canvasImage.positionInCanvas.y*this.height,
+                    element.canvasImage.sizeInCanvas.width*this.width,
+                    element.canvasImage.sizeInCanvas.height*this.height);
             }
         }
     }

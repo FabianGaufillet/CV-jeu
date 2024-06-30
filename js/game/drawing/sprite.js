@@ -10,12 +10,22 @@ export class Sprite {
         this.#currentIndexOfSprite = indexOfSprite;
     }
 
-    getNextSprite(sprites) {
+    setNextSprite(moves,canvasImage) {
+        const nextSprite = this.#getNextSprite(moves);
+        canvasImage.updatePositionAndSizeOfSourceImage(nextSprite);
+    }
+
+    #getNextSprite(sprites) {
         const previousIndexOfSprite = this.#currentIndexOfSprite;
         if (!(previousIndexOfSprite === sprites.length-1 && this.#currentState.startsWith("dead"))) {
             this.#currentIndexOfSprite = (this.#currentIndexOfSprite + 1)%sprites.length;
         }
         return sprites[previousIndexOfSprite];
+    }
+
+    changeSprite(state) {
+        this.#currentState = state;
+        this.#currentIndexOfSprite = 0;
     }
 
     get currentState() {
@@ -24,10 +34,6 @@ export class Sprite {
 
     set currentState(state) {
         this.#currentState = state;
-    }
-
-    set currentIndexOfSprite(index) {
-        this.#currentIndexOfSprite = index;
     }
 
 }

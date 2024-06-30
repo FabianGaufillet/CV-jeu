@@ -5,7 +5,6 @@
 }
 
 canvas#game {
-    background-image: url("../images/levels/level1.svg");
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;

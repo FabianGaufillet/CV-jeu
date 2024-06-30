@@ -1,22 +1,33 @@
 "use strict";
 
-import {ROOT_PATH_DATA_LEVEL,ROOT_PATH_IMAGE_LEVEL} from "../constants.js";
+import {ROOT_PATH_DATA_LEVEL, ROOT_PATH_IMAGE_LEVEL, SCORE_REQUIRED_TO_CHANGE_LEVEL} from "./constants.js";
+import {Ground} from "./ground.js";
 
 export class Level {
 
+    static currentLevel = 0;
+    static nbLevels = 0;
+    static scoreToReachForNextLevel = SCORE_REQUIRED_TO_CHANGE_LEVEL;
     #dataFile;
-    #imageFile;
     #ground;
 
     constructor(name) {
         this.#dataFile = `${ROOT_PATH_DATA_LEVEL}${name}.json`;
-        this.#imageFile = `${ROOT_PATH_IMAGE_LEVEL}${name}.svg`;
+        Level.nbLevels++;
     }
 
     loadData() {
         return fetch(this.#dataFile)
             .then(res => res.json())
-            .then(data => {this.#ground = data["ground"];});
+            .then(data => {this.#ground = new Ground(data["ground"]);});
+    }
+
+    static levelSelection(score, canvasElement) {
+        if (score >= Level.scoreToReachForNextLevel) {
+            Level.scoreToReachForNextLevel += SCORE_REQUIRED_TO_CHANGE_LEVEL;
+            Level.currentLevel = (Level.currentLevel+1)%Level.nbLevels;
+            canvasElement.htmlCanvasElement.style.backgroundImage = `url("${ROOT_PATH_IMAGE_LEVEL}/level${Level.currentLevel}.svg")`;
+        }
     }
 
     get ground() {

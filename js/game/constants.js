@@ -1,24 +1,3 @@
 "use strict";
 
-export const GAME_REFRESH_RATE = 30;
-export const ROOT_PATH_DATA_LEVEL = "./data/levels/";
-export const ROOT_PATH_IMAGE_LEVEL = "./images/levels/";
-export const ROOT_PATH_DATA_CHARACTER = "./data/characters/";
-export const ROOT_PATH_IMAGE_CHARACTER = "./images/characters/";
-export const ROOT_PATH_DATA_NUMBERS = "./data/numbers/";
-export const ROOT_PATH_IMAGE_NUMBERS = "./images/numbers/";
-export const WALK_MAXVELOCITY = 0.004;
-export const RUN_MAXVELOCITY = 0.01;
-export const FALL_MAXVELOCITY = 0.03;
-export const GRAVITY = 0.0025;
-export const FRICTION_COEFFICIENT = 0.8;
-export const MAX_FALLING_TIME = 3000;
-export const WIDTH_OF_CHARACTERS_IN_CANVAS = 0.08;
-export const HEIGHT_OF_CHARACTERS_IN_CANVAS = 0.12;
-export const DELAY_BEFORE_BACK_TO_LIFE = 5000;
-export const SCORE_POSITION_X = 0.45;
-export const SCORE_POSITION_Y = 0;
-export const DIGITS_MARGIN_RIGHT = 0.05;
-export const SCORE_WIDTH = 0.04;
-export const SCORE_HEIGHT = 0.06;
 export const MAX_ENEMIES = 5;

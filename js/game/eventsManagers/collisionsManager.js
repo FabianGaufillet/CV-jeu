@@ -1,6 +1,6 @@
 "use strict";
 
-import {DELAY_BEFORE_BACK_TO_LIFE} from "../constants.js";
+import {DELAY_BEFORE_BACK_TO_LIFE} from "./constants.js";
 
 export class CollisionsManager {
 
@@ -31,6 +31,8 @@ export class CollisionsManager {
                     this.collisionResolution(enemy,"L",score);
                 } else if (playerPositionRight >= enemyPositionLeft && playerPositionRight <= enemyPositionRight) {
                     this.collisionResolution(enemy,"R",score);
+                } else {
+                    this.collisionResolution(enemy,"");
                 }
             } else {
                 this.collisionResolution(enemy,"");
@@ -63,7 +65,6 @@ export class CollisionsManager {
                 this.#player.isDead = true;
             }
         }
-
     }
 
 }
