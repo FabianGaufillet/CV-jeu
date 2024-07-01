@@ -1,9 +1,22 @@
 "use strict";
 
+export const ROOT_PATH_DATA_MENU = "./data/menu";
+export const ROOT_PATH_IMAGE_MENU = "./images/menu";
+export const BUTTON_WIDTH = 0.10;
+export const BUTTON_HEIGHT = 0.10;
 export const PLAY_BUTTON_POSITION_X = 0.25;
 export const PLAY_BUTTON_POSITION_Y = 0.45;
-export const PLAY_BUTTON_WIDTH = 0.10;
-export const PLAY_BUTTON_HEIGHT = 0.10;
-export const ROOT_PATH_DATA_MENU = "./data/menu/";
-export const ROOT_PATH_IMAGE_MENU = "./images/menu/";
-export const BUTTONS_MENU_MARGIN_RIGHT = 0.20;
+export const CONFIG_BUTTON_POSITION_X = 0.45;
+export const CONFIG_BUTTON_POSITION_Y = 0.45;
+export const INFO_BUTTON_POSITION_X = 0.65;
+export const INFO_BUTTON_POSITION_Y = 0.45;
+export const BACK_BUTTON_POSITION_X = 0.45;
+export const BACK_BUTTON_POSITION_Y = 0.85;
+export const COMMANDS_POSITION_X = 0.10;
+export const COMMANDS_POSITION_Y = 0;
+export const COMMANDS_WIDTH = 0.80;
+export const COMMANDS_HEIGHT = 0.80;
+export const ABOUT_POSITION_X = 0.10;
+export const ABOUT_POSITION_Y = 0;
+export const ABOUT_WIDTH = 0.80;
+export const ABOUT_HEIGHT = 0.80;

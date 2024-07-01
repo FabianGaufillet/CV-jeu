@@ -4,7 +4,7 @@ import {GAME_REFRESH_RATE} from "./constants.js";
 import {CanvasElement} from "../drawing/canvasElement.js";
 import {Character} from "./character.js";
 import {CollisionsManager} from "../eventsManagers/collisionsManager.js";
-import {Score} from "../drawing/score.js";
+import {Score} from "./score.js";
 import {Level} from "./level.js";
 import {KeysPressedManager} from "../eventsManagers/keysPressedManager.js";
 

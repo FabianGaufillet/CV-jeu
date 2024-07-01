@@ -55,7 +55,7 @@ export class KeysPressedManager {
                     player.updateStateOfCharacter("jumpAttack"+characterOrientation);
                 }
             } else {
-                if (!player.sprites.currentState.startsWith("jump")) {
+                if (!["jumpL","jumpR"].includes(player.sprites.currentState)) {
                     player.updateStateOfCharacter("jump"+characterOrientation);
                 }
             }

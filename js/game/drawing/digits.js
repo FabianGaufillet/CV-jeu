@@ -22,8 +22,8 @@ export class Digits {
     #canvasImage;
 
     constructor() {
-        this.#dataFile = `${ROOT_PATH_DATA_NUMBERS}numbers.json`;
-        this.#imageFile = `${ROOT_PATH_IMAGE_NUMBERS}numbers.png`;
+        this.#dataFile = `${ROOT_PATH_DATA_NUMBERS}/numbers.json`;
+        this.#imageFile = `${ROOT_PATH_IMAGE_NUMBERS}/numbers.png`;
         this.#sprites = new Sprite(null,0);
     }
 

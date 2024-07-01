@@ -7,24 +7,24 @@ export class Menu {
 
     #htmlCanvasElement;
     #canvasElement;
-    #buttons;
+    #items;
     #mouseEventsManager;
 
-    constructor(htmlCanvasElement, buttons) {
+    constructor(htmlCanvasElement, items) {
         this.#htmlCanvasElement = htmlCanvasElement;
         this.#canvasElement = new CanvasElement(htmlCanvasElement);
-        this.#buttons = buttons;
+        this.#items = items;
     }
 
     loadMenuData() {
         return [
-            ...this.#buttons.map(button => button.loadData()),
-            ...this.#buttons.map(button => button.loadImage())
+            ...this.#items.map(item => item.loadData()),
+            ...this.#items.map(item => item.loadImage())
         ];
     }
 
     mouseEventHandler() {
-        this.#mouseEventsManager = new MouseEventsManager(this.#htmlCanvasElement, this.#canvasElement, this.#buttons);
+        this.#mouseEventsManager = new MouseEventsManager(this.#htmlCanvasElement, this.#canvasElement, this.#items);
     }
 
     get canvasElement() {

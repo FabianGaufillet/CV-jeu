@@ -1,17 +1,10 @@
 "use strict";
 
+import {ROOT_PATH_DATA_MENU, ROOT_PATH_IMAGE_MENU} from "./constants.js";
 import {CanvasImage} from "../drawing/canvasImage.js";
-import {
-    BUTTONS_MENU_MARGIN_RIGHT,
-    PLAY_BUTTON_HEIGHT,
-    PLAY_BUTTON_POSITION_X,
-    PLAY_BUTTON_POSITION_Y,
-    PLAY_BUTTON_WIDTH,
-    ROOT_PATH_DATA_MENU, ROOT_PATH_IMAGE_MENU
-} from "./constants.js";
 import {Sprite} from "../drawing/sprite.js";
 
-export class MenuButton {
+export class MenuItem {
 
     #type;
     #dataFile;
@@ -23,8 +16,8 @@ export class MenuButton {
 
     constructor(type,status) {
         this.#type = type;
-        this.#dataFile = `${ROOT_PATH_DATA_MENU}${type}.json`;
-        this.#imageFile = `${ROOT_PATH_IMAGE_MENU}${type}_button.png`;
+        this.#dataFile = `${ROOT_PATH_DATA_MENU}/${type}.json`;
+        this.#imageFile = `${ROOT_PATH_IMAGE_MENU}/${type}.png`;
         this.#sprites = new Sprite(status,0);
     }
 
@@ -43,7 +36,7 @@ export class MenuButton {
         });
     }
 
-    initCanvasImage(index) {
+    initCanvasImage(posX,posY,width,height) {
         const currentState = this.#sprites["currentState"],
               settings = this.#data[currentState];
 
@@ -55,10 +48,10 @@ export class MenuButton {
                 "h":settings[0]["h"]
             },
             "canvas":{
-                "x":PLAY_BUTTON_POSITION_X+BUTTONS_MENU_MARGIN_RIGHT*index,
-                "y":PLAY_BUTTON_POSITION_Y,
-                "w":PLAY_BUTTON_WIDTH,
-                "h":PLAY_BUTTON_HEIGHT
+                "x":posX,
+                "y":posY,
+                "w":width,
+                "h":height
             }
         });
     }

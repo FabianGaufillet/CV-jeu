@@ -25,9 +25,9 @@ export class Character {
     #fallingTime = null;
 
     constructor(type,state) {
-        this.#dataFile = `${ROOT_PATH_DATA_CHARACTER}${type}.json`;
-        this.#imagePath = `${ROOT_PATH_IMAGE_CHARACTER}${type}/`;
-        this.#imageFile = `${this.#imagePath}${state}.png`;
+        this.#dataFile = `${ROOT_PATH_DATA_CHARACTER}/${type}.json`;
+        this.#imagePath = `${ROOT_PATH_IMAGE_CHARACTER}/${type}`;
+        this.#imageFile = `${this.#imagePath}/${state}.png`;
         this.#sprites = new Sprite(state,0);
         this.#velocities = new Velocity();
     }
@@ -85,7 +85,7 @@ export class Character {
     }
 
     updateStateOfCharacter(state) {
-        this.#imageFile = `${this.#imagePath}${state}.png`;
+        this.#imageFile = `${this.#imagePath}/${state}.png`;
         this.#image.src = this.#imageFile;
         this.#sprites.changeSprite(state);
     }

@@ -12,7 +12,7 @@ export class Level {
     #ground;
 
     constructor(name) {
-        this.#dataFile = `${ROOT_PATH_DATA_LEVEL}${name}.json`;
+        this.#dataFile = `${ROOT_PATH_DATA_LEVEL}/${name}.json`;
         Level.nbLevels++;
     }
 

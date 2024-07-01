@@ -43,7 +43,7 @@ export class GameLauncher {
     }
 
     launchGame() {
-        this.#htmlCanvasElement.style.backgroundImage = `url("${ROOT_PATH_IMAGE_LEVEL}level0.svg")`;
+        this.#htmlCanvasElement.style.backgroundImage = `url("${ROOT_PATH_IMAGE_LEVEL}/level0.svg")`;
         Promise.all(this.#game.loadGameData()).then(() => {
             this.#player.initCanvasImage();
             for (let i= 0; i < this.#enemies.length; i++) this.#enemies[i].initCanvasImage();
