@@ -8,7 +8,6 @@ export class MouseButtonPressedManager {
     #canvasElement;
     #items;
     #gameLauncher;
-    #gameLaunched = false;
     #screen = "mainMenu";
     #screenItems = {
         "mainMenu": ["play","config","info"],
@@ -23,7 +22,7 @@ export class MouseButtonPressedManager {
         this.#gameLauncher = new GameLauncher();
     }
 
-    manageMouseButtonPressed(ev, mousedown, click) {
+    manageMouseButtonPressed(menuLauncher, ev, mousedown, click) {
         const mouseX = ev.clientX-this.#htmlCanvasElement.offsetLeft,
               mouseY = ev.clientY-this.#htmlCanvasElement.offsetTop,
               concernedItems = this.#items.filter(item => this.#screenItems[this.#screen].includes(item.type));
@@ -38,7 +37,7 @@ export class MouseButtonPressedManager {
             let nextState = null;
             if (overItem) {
                 if (click) {
-                    this.#handleClick(item);
+                    this.#handleClick(item, menuLauncher);
                     return;
                 } else if (!mousedown && item.sprites.currentState !== "hover") {
                     nextState = "hover";
@@ -57,11 +56,11 @@ export class MouseButtonPressedManager {
         item.sprites.setNextSprite(item.data[nextState],item.canvasImage);
     }
 
-    #handleClick(item) {
+    #handleClick(item, menuLauncher) {
         this.#updateSprite(item, "normal");
         switch (item.type) {
             case "play":
-                this.#play();
+                this.#play(menuLauncher);
                 break;
 
             case "config":
@@ -78,9 +77,11 @@ export class MouseButtonPressedManager {
         }
     }
 
-    #play() {
-        this.#gameLauncher.launchGame();
-        this.#gameLaunched = true;
+    #play(menuLauncher) {
+        if (this.#gameLauncher.ready) {
+            this.#gameLauncher.launchGame(menuLauncher);
+            this.#htmlCanvasElement.dispatchEvent(new Event('gameLaunched'));
+        }
     }
 
     #config() {
@@ -96,9 +97,5 @@ export class MouseButtonPressedManager {
     #back() {
         this.#screen = "mainMenu";
         this.#canvasElement.drawImage(...this.#items.filter(item => this.#screenItems[this.#screen].includes(item.type)));
-    }
-
-    get gameLaunched() {
-        return this.#gameLaunched;
     }
 }

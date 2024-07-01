@@ -9,25 +9,23 @@ export class MouseEventsManager {
     #mousedown = false;
     #click = false;
     #mouseButtonPressedManager;
-    #eventsList = ["mousemove","mousedown","mouseup"]
+    #eventsList = ["mousemove","mousedown","mouseup","gameLaunched"];
     #mouseEventsHandler;
 
     constructor(htmlCanvasElement, canvasElement, buttons) {
         this.#htmlCanvasElement = htmlCanvasElement;
         this.#mouseButtonPressedManager = new MouseButtonPressedManager(htmlCanvasElement, canvasElement, buttons);
-        this.#initializeMouseEventsHandler();
-        this.#listenEvents();
     }
 
-    #initializeMouseEventsHandler() {
+    initializeMouseEventsHandler(menuLauncher) {
         this.#mouseEventsHandler = ev => {
-            if (this.#mouseButtonPressedManager.gameLaunched) {
+            if (ev.type === "gameLaunched") {
                 this.#eventsList.forEach(typeOfEvent => this.#htmlCanvasElement.removeEventListener(typeOfEvent, this.#mouseEventsHandler));
             } else {
                 if (ev.type === "mouseup") {
                     if (this.#mousedown) {
                         this.#click = true;
-                        setTimeout(()=> this.#click = false,100);
+                        setTimeout(()=> this.#click = false,50);
                     }
                     this.#mouseup = true;
                     this.#mousedown = false;
@@ -35,9 +33,10 @@ export class MouseEventsManager {
                     this.#mouseup = false;
                     this.#mousedown = true;
                 }
-                this.#mouseButtonPressedManager.manageMouseButtonPressed(ev, this.#mousedown, this.#click);
+                this.#mouseButtonPressedManager.manageMouseButtonPressed(menuLauncher, ev, this.#mousedown, this.#click);
             }
         }
+        this.#listenEvents();
     }
 
     #listenEvents() {

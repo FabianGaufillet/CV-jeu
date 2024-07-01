@@ -17,12 +17,14 @@ export class GameLauncher {
     #player;
     #digits;
     #enemies;
+    #ready = false;
 
     constructor() {
         this.#initLevel();
         this.#addEnemies();
         this.#htmlCanvasElement = document.querySelector("canvas#game");
         this.#game = new Game(this.#htmlCanvasElement,this.#levels,this.#digits,this.#player,this.#enemies);
+        this.#loadGameData();
     }
 
     #initLevel() {
@@ -42,14 +44,21 @@ export class GameLauncher {
         }
     }
 
-    launchGame() {
-        this.#htmlCanvasElement.style.backgroundImage = `url("${ROOT_PATH_IMAGE_LEVEL}/level0.svg")`;
+    #loadGameData() {
         Promise.all(this.#game.loadGameData()).then(() => {
             this.#player.initCanvasImage();
             for (let i= 0; i < this.#enemies.length; i++) this.#enemies[i].initCanvasImage();
             for (let i= 0; i < this.#digits.length; i++) this.#digits[i].initCanvasImage(i);
-            this.#game.loop();
-        });
+        }).then(() => this.#ready = true);
+    }
+
+    launchGame(menuLauncher) {
+        this.#htmlCanvasElement.style.backgroundImage = `url("${ROOT_PATH_IMAGE_LEVEL}/level0.svg")`;
+        this.#game.loop(menuLauncher);
+    }
+
+    get ready() {
+        return this.#ready;
     }
 
 }

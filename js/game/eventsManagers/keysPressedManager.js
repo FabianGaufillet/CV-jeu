@@ -1,10 +1,15 @@
 "use strict";
 
+import {COOLDOWN_BETWEEN_PAUSES} from "../gameplay/constants.js";
 import {KeyboardEventsManager} from "./keyboardEventsManager.js";
 
 export class KeysPressedManager {
 
     #keyboardEventsManager;
+    #gamePaused = false;
+    #gamePausedTime = 0;
+    #backToMenu = false;
+
     constructor() {
         this.#keyboardEventsManager = new KeyboardEventsManager();
     }
@@ -15,6 +20,17 @@ export class KeysPressedManager {
               isKeyPressed = keysPressedEntries.filter(entry=> entry[0] !== "control" && entry[1]).length,
               characterOrientation = player.sprites.currentState.at(-1);
 
+        if (keysPressed["escape"]) {
+            this.#gamePaused = false;
+            this.#backToMenu = true;
+        }
+        if (keysPressed["p"]) {
+            if (Date.now() - this.#gamePausedTime >= COOLDOWN_BETWEEN_PAUSES) {
+                this.#gamePausedTime = Date.now();
+                this.#gamePaused = !this.#gamePaused;
+            }
+            return;
+        }
         if (player.isDead) {
             if (!player.sprites.currentState.startsWith("dead")) player.updateStateOfCharacter("dead"+characterOrientation);
             return false;
@@ -60,5 +76,17 @@ export class KeysPressedManager {
                 }
             }
         }
+    }
+
+    get gamePaused() {
+        return this.#gamePaused;
+    }
+
+    get backToMenu() {
+        return this.#backToMenu;
+    }
+
+    set backToMenu(backToMenuStatus) {
+        this.#backToMenu = backToMenuStatus;
     }
 }

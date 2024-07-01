@@ -15,3 +15,4 @@ export const RUN_MAXVELOCITY = 0.01;
 export const FALL_MAXVELOCITY = 0.03;
 export const GRAVITY = 0.0025;
 export const FRICTION_COEFFICIENT = 0.8;
+export const COOLDOWN_BETWEEN_PAUSES = 1000;

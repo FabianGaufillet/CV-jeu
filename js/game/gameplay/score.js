@@ -11,7 +11,7 @@ export class Score {
     }
 
     updateScore(points) {
-        this.#currentScore += points;
+        this.#currentScore = Math.max(this.#currentScore+points,0);
         this.#showScore();
     }
 

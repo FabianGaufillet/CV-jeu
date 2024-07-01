@@ -20,6 +20,7 @@ export class Game {
     #score;
     #requestAnimationFrameID;
     #lastRefresh = Date.now();
+    #menuLauncher = null;
 
     constructor(htmlCanvasElement,levels,digits,player,enemies) {
         this.#canvasElement = new CanvasElement(htmlCanvasElement);
@@ -44,15 +45,26 @@ export class Game {
         ];
     }
 
-    loop() {
+    loop(menuLauncher) {
+        this.#menuLauncher ??= menuLauncher;
         if (Date.now() - this.#lastRefresh >= GAME_REFRESH_RATE) {
             this.#lastRefresh = Date.now();
-            this.#keysPressedManager.manageKeysPressed(this.#player);
-            Character.updatePositionsOfCharacters(this.#player, ...this.#enemies);
-            Level.levelSelection(this.#score.currentScore,this.#canvasElement);
-            this.#levels[Level.currentLevel].ground.isCharacterOnGround(this.#player, ...this.#enemies);
-            this.#collisionHandler.detectCollision(this.#enemies,this.#score);
-            this.#canvasElement.drawImage(...this.#digits,...this.#enemies,this.#player);
+            if (this.#keysPressedManager.backToMenu) {
+                this.#keysPressedManager.backToMenu = false;
+                cancelAnimationFrame(this.#requestAnimationFrameID);
+                this.#menuLauncher.launchMenu();
+                return;
+            }
+            if (!this.#keysPressedManager.gamePaused) {
+                this.#keysPressedManager.manageKeysPressed(this.#player);
+                Character.updatePositionsOfCharacters(this.#player, ...this.#enemies);
+                Level.levelSelection(this.#score.currentScore,this.#canvasElement);
+                this.#levels[Level.currentLevel].ground.isCharacterOnGround(this.#player, ...this.#enemies);
+                this.#collisionHandler.detectCollision(this.#enemies,this.#score);
+                this.#canvasElement.drawImage(...this.#digits,...this.#enemies,this.#player);
+            } else if (this.#keysPressedManager.gamePaused) {
+                this.#keysPressedManager.manageKeysPressed(this.#player);
+            }
         }
         this.#requestAnimationFrameID = requestAnimationFrame(() => this.loop());
     }

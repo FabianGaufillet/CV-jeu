@@ -77,7 +77,7 @@ export class Character {
                 character.#data[currentState]["velocityX"],
                 character.#data[currentState]["velocityY"]
             );
-            character.#canvasImage.updatePositionInCanvas(
+            character.#canvasImage.applyVelocity(
                 character.#velocities.velocityX,
                 character.#velocities.velocityY
             );
@@ -94,7 +94,7 @@ export class Character {
         setTimeout(() => {
             this.isDead = false;
             this.updateStateOfCharacter(status);
-            this.#canvasImage.updatePositionInCanvas(Math.random(),Math.random());
+            this.#canvasImage.applyVelocity(Math.random(),Math.random());
         },delay);
     }
 

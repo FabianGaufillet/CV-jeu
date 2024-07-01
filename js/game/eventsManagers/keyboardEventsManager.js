@@ -7,6 +7,8 @@ export class KeyboardEventsManager {
     #arrowUp = false;
     #control = false;
     #x = false;
+    #p = false;
+    #escape = false;
 
     constructor() {
         this.#setEventsManager();
@@ -39,6 +41,15 @@ export class KeyboardEventsManager {
                     this.#x = true;
                     break;
 
+                case "p":
+                case "P":
+                    this.#p = true;
+                    break;
+
+                case "Escape":
+                    this.#escape = true;
+                    break;
+
                 default:
                     return;
             }
@@ -69,6 +80,15 @@ export class KeyboardEventsManager {
                     this.#x = false;
                     break;
 
+                case "p":
+                case "P":
+                    this.#p = false;
+                    break;
+
+                case "Escape":
+                    this.#escape = false;
+                    break;
+
                 default:
                     return;
             }
@@ -81,7 +101,9 @@ export class KeyboardEventsManager {
             "arrowRight": this.#arrowRight,
             "arrowUp": this.#arrowUp,
             "control": this.#control,
-            "x": this.#x
+            "x": this.#x,
+            "p": this.#p,
+            "escape": this.#escape
         };
     }
 

@@ -5,6 +5,7 @@ import {DELAY_BEFORE_BACK_TO_LIFE} from "./constants.js";
 export class CollisionsManager {
 
     #player;
+
     constructor(player) {
         this.#player = player;
     }
@@ -42,7 +43,8 @@ export class CollisionsManager {
 
     collisionResolution(enemy,collisionPositionX,score) {
         const characterOrientation = enemy.sprites.currentState.at(-1),
-              attackStatus = [`attack${collisionPositionX}`,`jumpAttack${collisionPositionX}`];
+              attackStatus = [`attack${collisionPositionX}`,`jumpAttack${collisionPositionX}`],
+              directions = ["L","R"];
 
         if (!collisionPositionX) {
             if (!enemy.sprites.currentState.startsWith("walk")) {
@@ -50,7 +52,6 @@ export class CollisionsManager {
             }
         } else {
             if (attackStatus.includes(this.#player.sprites.currentState)) {
-                const directions = ["L","R"];
                 enemy.isDead = true;
                 score.updateScore(1);
                 enemy.updateStateOfCharacter("dead" + characterOrientation);
@@ -63,6 +64,8 @@ export class CollisionsManager {
                 enemy.updateStateOfCharacter("attack"+characterOrientation);
             } else if (enemy.sprites.currentState.startsWith("attack")) {
                 this.#player.isDead = true;
+                score.updateScore(-1);
+                this.#player.comeBackToLife("walk"+directions.at(Math.floor(Math.random()*directions.length)), DELAY_BEFORE_BACK_TO_LIFE);
             }
         }
     }

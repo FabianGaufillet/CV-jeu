@@ -14,6 +14,7 @@ export class Menu {
         this.#htmlCanvasElement = htmlCanvasElement;
         this.#canvasElement = new CanvasElement(htmlCanvasElement);
         this.#items = items;
+        this.#mouseEventsManager = new MouseEventsManager(this.#htmlCanvasElement, this.#canvasElement, this.#items);
     }
 
     loadMenuData() {
@@ -23,12 +24,12 @@ export class Menu {
         ];
     }
 
-    mouseEventHandler() {
-        this.#mouseEventsManager = new MouseEventsManager(this.#htmlCanvasElement, this.#canvasElement, this.#items);
-    }
-
     get canvasElement() {
         return this.#canvasElement;
+    }
+
+    get mouseEventsManager() {
+        return this.#mouseEventsManager;
     }
 
 }

@@ -30,7 +30,7 @@ export class CanvasImage {
         }
     }
 
-    updatePositionInCanvas(velocityX,velocityY) {
+    applyVelocity(velocityX, velocityY) {
         this.#positionInCanvas["x"] += velocityX;
         this.#positionInCanvas["y"] += velocityY;
 
@@ -58,10 +58,6 @@ export class CanvasImage {
 
     get positionInCanvas() {
         return this.#positionInCanvas;
-    }
-
-    set positionInCanvas(position) {
-        this.#positionInCanvas = position;
     }
 
     get sizeInCanvas() {
