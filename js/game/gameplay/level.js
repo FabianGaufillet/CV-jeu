@@ -26,7 +26,7 @@ export class Level {
         if (score >= Level.scoreToReachForNextLevel) {
             Level.scoreToReachForNextLevel += SCORE_REQUIRED_TO_CHANGE_LEVEL;
             Level.currentLevel = (Level.currentLevel+1)%Level.nbLevels;
-            canvasElement.htmlCanvasElement.style.backgroundImage = `url("${ROOT_PATH_IMAGE_LEVEL}/level${Level.currentLevel}.svg")`;
+            canvasElement.setBackgroundImage(`${ROOT_PATH_IMAGE_LEVEL}/level${Level.currentLevel}.svg`);
         }
     }
 

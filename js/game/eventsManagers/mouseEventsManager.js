@@ -17,7 +17,7 @@ export class MouseEventsManager {
         this.#mouseButtonPressedManager = new MouseButtonPressedManager(htmlCanvasElement, canvasElement, buttons);
     }
 
-    initializeMouseEventsHandler(menuLauncher) {
+    initializeMouseEventsHandler() {
         this.#mouseEventsHandler = ev => {
             if (ev.type === "gameLaunched") {
                 this.#eventsList.forEach(typeOfEvent => this.#htmlCanvasElement.removeEventListener(typeOfEvent, this.#mouseEventsHandler));
@@ -33,7 +33,7 @@ export class MouseEventsManager {
                     this.#mouseup = false;
                     this.#mousedown = true;
                 }
-                this.#mouseButtonPressedManager.manageMouseButtonPressed(menuLauncher, ev, this.#mousedown, this.#click);
+                this.#mouseButtonPressedManager.manageMouseButtonPressed(ev, this.#mousedown, this.#click);
             }
         }
         this.#listenEvents();

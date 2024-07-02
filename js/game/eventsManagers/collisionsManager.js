@@ -65,7 +65,7 @@ export class CollisionsManager {
             } else if (enemy.sprites.currentState.startsWith("attack")) {
                 this.#player.isDead = true;
                 score.updateScore(-1);
-                this.#player.comeBackToLife("walk"+directions.at(Math.floor(Math.random()*directions.length)), DELAY_BEFORE_BACK_TO_LIFE);
+                this.#player.comeBackToLife("idle"+directions.at(Math.floor(Math.random()*directions.length)), DELAY_BEFORE_BACK_TO_LIFE);
             }
         }
     }

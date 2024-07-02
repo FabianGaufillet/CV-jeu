@@ -4,7 +4,9 @@ import {MenuLauncher} from "./js/game/menu/menuLauncher.js";
     'use strict';
 
     document.addEventListener('DOMContentLoaded', function() {
-        const menuLauncher = new MenuLauncher();
+        const htmlCanvasElement = document.querySelector("canvas#game")
+            , menuLauncher = new MenuLauncher(htmlCanvasElement);
+
         Promise.all(menuLauncher.menu.loadMenuData()).then(() => {
             menuLauncher.initCanvasImages();
             menuLauncher.launchMenu();

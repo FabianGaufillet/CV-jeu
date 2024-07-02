@@ -1,7 +1,6 @@
 "use strict";
 
 import {GAME_REFRESH_RATE} from "./constants.js";
-import {CanvasElement} from "../drawing/canvasElement.js";
 import {Character} from "./character.js";
 import {CollisionsManager} from "../eventsManagers/collisionsManager.js";
 import {Score} from "./score.js";
@@ -20,10 +19,11 @@ export class Game {
     #score;
     #requestAnimationFrameID;
     #lastRefresh = Date.now();
-    #menuLauncher = null;
+    #menuLauncher;
 
-    constructor(htmlCanvasElement,levels,digits,player,enemies) {
-        this.#canvasElement = new CanvasElement(htmlCanvasElement);
+    constructor(canvasElement, menuLauncher, levels, digits, player, enemies) {
+        this.#canvasElement = canvasElement;
+        this.#menuLauncher = menuLauncher;
         this.#levels = levels;
         this.#digits = digits;
         this.#player = player;
@@ -45,8 +45,7 @@ export class Game {
         ];
     }
 
-    loop(menuLauncher) {
-        this.#menuLauncher ??= menuLauncher;
+    loop() {
         if (Date.now() - this.#lastRefresh >= GAME_REFRESH_RATE) {
             this.#lastRefresh = Date.now();
             if (this.#keysPressedManager.backToMenu) {

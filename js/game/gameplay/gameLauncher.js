@@ -9,6 +9,8 @@ import {Digits} from "../drawing/digits.js";
 export class GameLauncher {
 
     #htmlCanvasElement;
+    #canvasElement;
+    #menuLauncher;
     #game;
     #availableEnemies;
     #directions;
@@ -19,11 +21,13 @@ export class GameLauncher {
     #enemies;
     #ready = false;
 
-    constructor() {
+    constructor(htmlCanvasElement, canvasElement, menuLauncher) {
+        this.#htmlCanvasElement = htmlCanvasElement;
+        this.#canvasElement = canvasElement;
+        this.#menuLauncher = menuLauncher;
         this.#initLevel();
         this.#addEnemies();
-        this.#htmlCanvasElement = document.querySelector("canvas#game");
-        this.#game = new Game(this.#htmlCanvasElement,this.#levels,this.#digits,this.#player,this.#enemies);
+        this.#createNewGame();
         this.#loadGameData();
     }
 
@@ -44,6 +48,10 @@ export class GameLauncher {
         }
     }
 
+    #createNewGame() {
+        this.#game = new Game(this.#canvasElement, this.#menuLauncher, this.#levels,this.#digits,this.#player,this.#enemies);
+    }
+
     #loadGameData() {
         Promise.all(this.#game.loadGameData()).then(() => {
             this.#player.initCanvasImage();
@@ -52,9 +60,9 @@ export class GameLauncher {
         }).then(() => this.#ready = true);
     }
 
-    launchGame(menuLauncher) {
-        this.#htmlCanvasElement.style.backgroundImage = `url("${ROOT_PATH_IMAGE_LEVEL}/level0.svg")`;
-        this.#game.loop(menuLauncher);
+    launchGame() {
+        this.#canvasElement.setBackgroundImage(`${ROOT_PATH_IMAGE_LEVEL}/level${Level.currentLevel}.svg`);
+        this.#game.loop();
     }
 
     get ready() {

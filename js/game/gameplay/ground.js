@@ -5,6 +5,7 @@ import {MAX_FALLING_TIME} from "./constants.js";
 export class Ground {
 
     #groundList;
+
     constructor(groundList) {
         this.#groundList = groundList;
     }

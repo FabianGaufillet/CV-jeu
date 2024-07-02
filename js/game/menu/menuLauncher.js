@@ -19,10 +19,14 @@ import {
 } from "./constants.js";
 import {Menu} from "./menu.js";
 import {MenuItem} from "./menuItem.js";
+import {CanvasElement} from "../drawing/canvasElement.js";
+import {GameLauncher} from "../gameplay/gameLauncher.js";
 
 export class MenuLauncher {
 
     #htmlCanvasElement;
+    #canvasElement;
+    #gameLauncher;
     #playButton;
     #configButton;
     #infoButton;
@@ -31,8 +35,10 @@ export class MenuLauncher {
     #about;
     #menu;
 
-    constructor() {
-        this.#htmlCanvasElement = document.querySelector("canvas#game");
+    constructor(htmlCanvasElement) {
+        this.#htmlCanvasElement = htmlCanvasElement;
+        this.#canvasElement = new CanvasElement(htmlCanvasElement);
+        this.#gameLauncher = new GameLauncher(this.#htmlCanvasElement, this.#canvasElement, this);
         this.#initMenu();
     }
 
@@ -43,7 +49,7 @@ export class MenuLauncher {
         this.#backButton = new MenuItem("back","normal");
         this.#commands = new MenuItem("commands","normal");
         this.#about = new MenuItem("about", "normal");
-        this.#menu = new Menu(this.#htmlCanvasElement, [this.#playButton, this.#configButton, this.#infoButton, this.#backButton, this.#commands, this.#about]);
+        this.#menu = new Menu(this.#htmlCanvasElement, this.#canvasElement, [this.#playButton, this.#configButton, this.#infoButton, this.#backButton, this.#commands, this.#about]);
     }
 
     initCanvasImages() {
@@ -55,10 +61,22 @@ export class MenuLauncher {
         this.#about.initCanvasImage(ABOUT_POSITION_X, ABOUT_POSITION_Y, ABOUT_WIDTH, ABOUT_HEIGHT);
     }
 
+    #waitForGameLaunched() {
+        const gameLaunchAttempt = () => {
+            if (this.#gameLauncher.ready) {
+                this.#gameLauncher.launchGame(this);
+                this.#htmlCanvasElement.removeEventListener("gameLaunchAttempt", gameLaunchAttempt);
+                this.#htmlCanvasElement.dispatchEvent(new Event('gameLaunched'));
+            }
+        };
+        this.#htmlCanvasElement.addEventListener("gameLaunchAttempt", gameLaunchAttempt);
+    }
+
     launchMenu() {
-        this.#htmlCanvasElement.style.backgroundImage = `url(${ROOT_PATH_IMAGE_MENU}/background.jpg)`;
-        this.#menu.canvasElement.drawImage(this.#playButton, this.#configButton, this.#infoButton);
-        this.#menu.mouseEventsManager.initializeMouseEventsHandler(this);
+        this.#canvasElement.setBackgroundImage(`${ROOT_PATH_IMAGE_MENU}/background.jpg`);
+        this.#canvasElement.drawImage(this.#playButton, this.#configButton, this.#infoButton);
+        this.#menu.mouseEventsManager.initializeMouseEventsHandler();
+        this.#waitForGameLaunched();
     }
 
     get menu() {

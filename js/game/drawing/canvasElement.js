@@ -47,4 +47,8 @@ export class CanvasElement {
         }
     }
 
+    setBackgroundImage(image) {
+        this.htmlCanvasElement.style.backgroundImage = `url(${image})`;
+    }
+
 }

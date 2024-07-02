@@ -1,13 +1,10 @@
 "use strict";
 
-import {GameLauncher} from "../gameplay/gameLauncher.js";
-
 export class MouseButtonPressedManager {
 
     #htmlCanvasElement;
     #canvasElement;
     #items;
-    #gameLauncher;
     #screen = "mainMenu";
     #screenItems = {
         "mainMenu": ["play","config","info"],
@@ -19,10 +16,9 @@ export class MouseButtonPressedManager {
         this.#htmlCanvasElement = htmlCanvasElement;
         this.#canvasElement = canvasElement;
         this.#items = items;
-        this.#gameLauncher = new GameLauncher();
     }
 
-    manageMouseButtonPressed(menuLauncher, ev, mousedown, click) {
+    manageMouseButtonPressed(ev, mousedown, click) {
         const mouseX = ev.clientX-this.#htmlCanvasElement.offsetLeft,
               mouseY = ev.clientY-this.#htmlCanvasElement.offsetTop,
               concernedItems = this.#items.filter(item => this.#screenItems[this.#screen].includes(item.type));
@@ -37,7 +33,7 @@ export class MouseButtonPressedManager {
             let nextState = null;
             if (overItem) {
                 if (click) {
-                    this.#handleClick(item, menuLauncher);
+                    this.#handleClick(item);
                     return;
                 } else if (!mousedown && item.sprites.currentState !== "hover") {
                     nextState = "hover";
@@ -56,46 +52,30 @@ export class MouseButtonPressedManager {
         item.sprites.setNextSprite(item.data[nextState],item.canvasImage);
     }
 
-    #handleClick(item, menuLauncher) {
+    #handleClick(item) {
         this.#updateSprite(item, "normal");
         switch (item.type) {
             case "play":
-                this.#play(menuLauncher);
+                this.#play();
                 break;
 
             case "config":
-                this.#config();
-                break;
-
             case "info":
-                this.#info();
+                this.#drawImage(item.type);
                 break;
 
             case "back":
-                this.#back();
+                this.#drawImage("mainMenu");
                 break;
         }
     }
 
-    #play(menuLauncher) {
-        if (this.#gameLauncher.ready) {
-            this.#gameLauncher.launchGame(menuLauncher);
-            this.#htmlCanvasElement.dispatchEvent(new Event('gameLaunched'));
-        }
+    #play() {
+        this.#htmlCanvasElement.dispatchEvent(new Event('gameLaunchAttempt'));
     }
 
-    #config() {
-        this.#screen = "config";
-        this.#canvasElement.drawImage(...this.#items.filter(item => this.#screenItems[this.#screen].includes(item.type)));
-    }
-
-    #info() {
-        this.#screen = "info";
-        this.#canvasElement.drawImage(...this.#items.filter(item => this.#screenItems[this.#screen].includes(item.type)));
-    }
-
-    #back() {
-        this.#screen = "mainMenu";
+    #drawImage(type) {
+        this.#screen = type;
         this.#canvasElement.drawImage(...this.#items.filter(item => this.#screenItems[this.#screen].includes(item.type)));
     }
 }
