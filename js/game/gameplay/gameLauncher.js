@@ -26,19 +26,22 @@ export class GameLauncher {
         this.#canvasElement = canvasElement;
         this.#menuLauncher = menuLauncher;
         this.#initLevel();
-        this.#addEnemies();
-        this.#createNewGame();
-        this.#loadGameData();
     }
 
     #initLevel() {
-        this.#availableEnemies = ["zombie_female","zombie_male"];
-        this.#directions = ["L","R"];
-        this.#nbEnemies = Math.ceil(Math.random() * MAX_ENEMIES);
-        this.#levels = [new Level("level0"),new Level("level1")];
-        this.#player = new Character("knight","idle"+this.#directions.at(Math.floor(Math.random()*this.#directions.length)));
-        this.#digits =  [new Digits(), new Digits(), new Digits()];
-        this.#enemies = [];
+        Promise.all([Level.loadAvailableLevelsData(), Character.loadAvailableCharacters(), Digits.loadDigits()].flat())
+            .then(() => {
+                this.#availableEnemies = ["zombie_female","zombie_male"];
+                this.#directions = ["L","R"];
+                this.#nbEnemies = Math.ceil(Math.random() * MAX_ENEMIES);
+                this.#levels = [new Level(0),new Level(1)];
+                this.#player = new Character("knight","idle"+this.#directions.at(Math.floor(Math.random()*this.#directions.length)));
+                this.#digits =  [new Digits(), new Digits(), new Digits()];
+                this.#enemies = [];
+                this.#addEnemies();
+                this.#createNewGame();
+                this.#loadGameData();
+        });
     }
 
     #addEnemies() {
@@ -49,15 +52,12 @@ export class GameLauncher {
     }
 
     #createNewGame() {
-        this.#game = new Game(this.#canvasElement, this.#menuLauncher, this.#levels,this.#digits,this.#player,this.#enemies);
+        this.#game = new Game(this.#canvasElement, this.#menuLauncher, this.#levels, this.#digits, this.#player, this.#enemies);
     }
 
     #loadGameData() {
-        Promise.all(this.#game.loadGameData()).then(() => {
-            this.#player.initCanvasImage();
-            for (let i= 0; i < this.#enemies.length; i++) this.#enemies[i].initCanvasImage();
-            for (let i= 0; i < this.#digits.length; i++) this.#digits[i].initCanvasImage(i);
-        }).then(() => this.#ready = true);
+        this.#game.loadGameData();
+        this.#ready = true;
     }
 
     launchGame() {

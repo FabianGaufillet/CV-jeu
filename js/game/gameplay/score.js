@@ -1,5 +1,7 @@
 "use strict";
 
+import {Digits} from "../drawing/digits.js";
+
 export class Score {
 
     #currentScore;
@@ -17,8 +19,8 @@ export class Score {
 
     #showScore() {
         const scoreToString = this.#currentScore.toString().padStart(3,"0");
-        for (let i=0; i<this.#digits.length; i++) {
-            this.#digits[i].canvasImage.updatePositionAndSizeOfSourceImage(this.#digits[i].numbers[scoreToString[i]])
+        for (let i= 0; i < this.#digits.length; i++) {
+            this.#digits[i].canvasImage.updatePositionAndSizeOfSourceImage(Digits.numbersData[scoreToString[i]]);
         }
     }
 

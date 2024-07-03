@@ -34,15 +34,9 @@ export class Game {
     }
 
     loadGameData() {
-        return [
-            this.#player.loadData(),
-            this.#player.loadImage(),
-            ...this.#levels.map(level => level.loadData()),
-            ...this.#digits.map(digit => digit.loadData()),
-            ...this.#digits.map(digit => digit.loadImage()),
-            ...this.#enemies.map(enemy => enemy.loadData()),
-            ...this.#enemies.map(enemy => enemy.loadImage())
-        ];
+        this.#player.initCanvasImage();
+        this.#enemies.map(enemy => enemy.initCanvasImage());
+        this.#digits.map((digit,i) => digit.initCanvasImage(i));
     }
 
     loop() {

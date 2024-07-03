@@ -5,21 +5,26 @@ import {Ground} from "./ground.js";
 
 export class Level {
 
+    static #availableLevels = ["level0","level1"];
+    static #allGrounds = {};
     static currentLevel = 0;
     static nbLevels = 0;
     static scoreToReachForNextLevel = SCORE_REQUIRED_TO_CHANGE_LEVEL;
-    #dataFile;
-    #ground;
+    #levelNumber;
 
-    constructor(name) {
-        this.#dataFile = `${ROOT_PATH_DATA_LEVEL}/${name}.json`;
+    constructor(levelNumber) {
+        this.#levelNumber = levelNumber;
         Level.nbLevels++;
     }
 
-    loadData() {
-        return fetch(this.#dataFile)
+    static loadData(levelName) {
+        return fetch(`${ROOT_PATH_DATA_LEVEL}/${levelName}.json`)
             .then(res => res.json())
-            .then(data => {this.#ground = new Ground(data["ground"]);});
+            .then(data => Level.#allGrounds[levelName] = new Ground(data["ground"]));
+    }
+
+    static loadAvailableLevelsData() {
+        return this.#availableLevels.map(availableLevel => Level.loadData(availableLevel));
     }
 
     static levelSelection(score, canvasElement) {
@@ -31,7 +36,7 @@ export class Level {
     }
 
     get ground() {
-        return this.#ground;
+        return Level.#allGrounds[`level${this.#levelNumber}`];
     }
 
 }

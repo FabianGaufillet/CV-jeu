@@ -14,41 +14,41 @@ import {CanvasImage} from "./canvasImage.js";
 
 export class Digits {
 
-    #dataFile;
-    #imageFile;
+    static #numbersData;
+    static #numbersImage;
     #sprites;
-    #numbers;
-    #image;
     #canvasImage;
 
     constructor() {
-        this.#dataFile = `${ROOT_PATH_DATA_NUMBERS}/numbers.json`;
-        this.#imageFile = `${ROOT_PATH_IMAGE_NUMBERS}/numbers.png`;
         this.#sprites = new Sprite(null,0);
     }
 
-    loadData() {
-        return fetch(this.#dataFile)
+    static #loadData() {
+        return fetch(`${ROOT_PATH_DATA_NUMBERS}/numbers.json`)
             .then(res => res.json())
-            .then(data => this.#numbers = data);
+            .then(data => this.#numbersData = data);
     }
 
-    loadImage() {
+    static #loadImage() {
         return new Promise((resolve, reject) => {
-            this.#image = new Image();
-            this.#image.addEventListener("load", resolve);
-            this.#image.addEventListener("error", reject);
-            this.#image.src = this.#imageFile;
+            this.#numbersImage = new Image();
+            this.#numbersImage.addEventListener("load", resolve);
+            this.#numbersImage.addEventListener("error", reject);
+            this.#numbersImage.src = `${ROOT_PATH_IMAGE_NUMBERS}/numbers.png`;
         });
+    }
+
+    static loadDigits() {
+        return [this.#loadData(), this.#loadImage()];
     }
 
     initCanvasImage(index) {
         this.#canvasImage = new CanvasImage({
             "sourceImage":{
-                "x":this.#numbers["0"]["x"],
-                "y":this.#numbers["0"]["y"],
-                "w":this.#numbers["0"]["w"],
-                "h":this.#numbers["0"]["h"]
+                "x":Digits.#numbersData["0"]["x"],
+                "y":Digits.#numbersData["0"]["y"],
+                "w":Digits.#numbersData["0"]["w"],
+                "h":Digits.#numbersData["0"]["h"]
             },
             "canvas":{
                 "x":SCORE_POSITION_X+DIGITS_MARGIN_RIGHT*index,
@@ -59,12 +59,12 @@ export class Digits {
         });
     }
 
-    get numbers() {
-        return this.#numbers;
+    static get numbersData() {
+        return this.#numbersData;
     }
 
     get image() {
-        return this.#image;
+        return Digits.#numbersImage;
     }
 
     get canvasImage() {

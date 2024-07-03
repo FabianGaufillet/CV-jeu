@@ -1,16 +1,12 @@
-import {MenuLauncher} from "./js/game/menu/menuLauncher.js";
+import {Menu} from "./js/game/menu/menu.js";
 
 (function() {
     'use strict';
 
     document.addEventListener('DOMContentLoaded', function() {
-        const htmlCanvasElement = document.querySelector("canvas#game")
-            , menuLauncher = new MenuLauncher(htmlCanvasElement);
+        const htmlCanvasElement = document.querySelector("canvas#game");
 
-        Promise.all(menuLauncher.menu.loadMenuData()).then(() => {
-            menuLauncher.initCanvasImages();
-            menuLauncher.launchMenu();
-        });
+        new Menu(htmlCanvasElement);
 
     });
 

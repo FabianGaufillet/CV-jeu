@@ -12,44 +12,56 @@ import {Velocity} from "./velocity.js";
 
 export class Character {
 
-    #dataFile;
-    #imagePath;
-    #imageFile;
+    static #availableTypes = ["knight", "zombie_female", "zombie_male"];
+    static #availableStates = {
+        "knight": ["attackL","attackR","deadL","deadR","idleL","idleR","jumpAttackL","jumpAttackR","jumpL","jumpR","runL","runR","walkL","walkR"],
+        "zombie_female": ["attackL","attackR","deadL","deadR","idleL","idleR","walkL","walkR"],
+        "zombie_male": ["attackL","attackR","deadL","deadR","idleL","idleR","walkL","walkR"]
+    };
+    static #allCharactersData = {};
+    static #allCharactersImages = {};
+    #type;
+    #state;
     #sprites;
     #velocities;
-    #data;
-    #image;
     #canvasImage;
     #onGround = true;
     #isDead = false;
     #fallingTime = null;
 
     constructor(type,state) {
-        this.#dataFile = `${ROOT_PATH_DATA_CHARACTER}/${type}.json`;
-        this.#imagePath = `${ROOT_PATH_IMAGE_CHARACTER}/${type}`;
-        this.#imageFile = `${this.#imagePath}/${state}.png`;
+        this.#type = type;
+        this.#state = state;
         this.#sprites = new Sprite(state,0);
         this.#velocities = new Velocity();
     }
 
-    loadData() {
-        return fetch(this.#dataFile)
+    static #loadData(type) {
+        return fetch(`${ROOT_PATH_DATA_CHARACTER}/${type}.json`)
             .then(res => res.json())
-            .then(data => this.#data = data);
+            .then(data => this.#allCharactersData[type] = data);
     }
 
-    loadImage() {
+    static #loadImage(type, state) {
         return new Promise((resolve, reject) => {
-            this.#image = new Image();
-            this.#image.addEventListener("load", resolve);
-            this.#image.addEventListener("error", reject);
-            this.#image.src = this.#imageFile;
+            if (!this.#allCharactersImages[type]) this.#allCharactersImages[type] = [];
+            this.#allCharactersImages[type].push(new Image());
+            this.#allCharactersImages[type].at(-1).addEventListener("load", resolve);
+            this.#allCharactersImages[type].at(-1).addEventListener("error", reject);
+            this.#allCharactersImages[type].at(-1).src = `${ROOT_PATH_IMAGE_CHARACTER}/${type}/${state}.png`;
         });
+    }
+
+    static loadAvailableCharacters() {
+        return [
+            this.#availableTypes.map(availableType => Character.#loadData(availableType)),
+            Object.keys(this.#availableStates).map(type => {this.#availableStates[type].map(availableState => Character.#loadImage(type, availableState));})
+        ].flat();
     }
 
     initCanvasImage() {
         const currentState = this.#sprites["currentState"],
-              moves = this.#data[currentState]["moves"];
+              moves = Character.#allCharactersData[this.#type][currentState]["moves"];
 
         this.#canvasImage = new CanvasImage({
             "sourceImage":{
@@ -70,12 +82,12 @@ export class Character {
     static updatePositionsOfCharacters(...characters) {
         for (const character of characters) {
             const currentState = character.sprites.currentState;
-            character.#sprites.setNextSprite(character.#data[currentState]["moves"],character.#canvasImage);
+            character.#sprites.setNextSprite(Character.#allCharactersData[character.#type][currentState]["moves"],character.#canvasImage);
             character.#velocities.updateVelocities(
                 character.#onGround,
                 currentState,
-                character.#data[currentState]["velocityX"],
-                character.#data[currentState]["velocityY"]
+                Character.#allCharactersData[character.#type][currentState]["velocityX"],
+                Character.#allCharactersData[character.#type][currentState]["velocityY"]
             );
             character.#canvasImage.applyVelocity(
                 character.#velocities.velocityX,
@@ -85,8 +97,7 @@ export class Character {
     }
 
     updateStateOfCharacter(state) {
-        this.#imageFile = `${this.#imagePath}/${state}.png`;
-        this.#image.src = this.#imageFile;
+        this.#state = state;
         this.#sprites.changeSprite(state);
     }
 
@@ -103,7 +114,7 @@ export class Character {
     }
 
     get image() {
-        return this.#image;
+        return Character.#allCharactersImages[this.#type][Character.#availableStates[this.#type].indexOf(this.#state)];
     }
 
     get canvasImage() {

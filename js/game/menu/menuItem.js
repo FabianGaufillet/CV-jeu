@@ -6,39 +6,44 @@ import {Sprite} from "../drawing/sprite.js";
 
 export class MenuItem {
 
+    static #availableMenuItems = ["play","config","info","back","commands","about"];
+    static #allMenuItemsData = {};
+    static #allMenuItemsImages = {};
+
     #type;
-    #dataFile;
-    #imageFile;
     #sprites;
-    #data;
-    #image;
     #canvasImage;
 
     constructor(type,status) {
         this.#type = type;
-        this.#dataFile = `${ROOT_PATH_DATA_MENU}/${type}.json`;
-        this.#imageFile = `${ROOT_PATH_IMAGE_MENU}/${type}.png`;
         this.#sprites = new Sprite(status,0);
     }
 
-    loadData() {
-        return fetch(this.#dataFile)
+    static #loadData(type) {
+        return fetch(`${ROOT_PATH_DATA_MENU}/${type}.json`)
             .then(res => res.json())
-            .then(data => this.#data = data);
+            .then(data => this.#allMenuItemsData[type] = data);
     }
 
-    loadImage() {
+    static #loadImage(type) {
         return new Promise((resolve, reject) => {
-            this.#image = new Image();
-            this.#image.addEventListener("load", resolve);
-            this.#image.addEventListener("error", reject);
-            this.#image.src = this.#imageFile;
+            this.#allMenuItemsImages[type] = new Image();
+            this.#allMenuItemsImages[type].addEventListener("load", resolve);
+            this.#allMenuItemsImages[type].addEventListener("error", reject);
+            this.#allMenuItemsImages[type].src = `${ROOT_PATH_IMAGE_MENU}/${type}.png`;
         });
+    }
+
+    static loadAvailableMenuItems() {
+        return [
+            this.#availableMenuItems.map(availableMenuItem => MenuItem.#loadData(availableMenuItem)),
+            this.#availableMenuItems.map(availableMenuItem => MenuItem.#loadImage(availableMenuItem))
+        ].flat();
     }
 
     initCanvasImage(posX,posY,width,height) {
         const currentState = this.#sprites["currentState"],
-              settings = this.#data[currentState];
+              settings = MenuItem.#allMenuItemsData[this.#type][currentState];
 
         this.#canvasImage = new CanvasImage({
             "sourceImage":{
@@ -65,11 +70,11 @@ export class MenuItem {
     }
 
     get data() {
-        return this.#data;
+        return MenuItem.#allMenuItemsData[this.#type];
     }
 
     get image() {
-        return this.#image;
+        return MenuItem.#allMenuItemsImages[this.#type];
     }
 
     get canvasImage() {
