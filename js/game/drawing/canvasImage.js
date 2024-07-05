@@ -30,6 +30,15 @@ export class CanvasImage {
         }
     }
 
+    coordinates() {
+        return {
+            "left": this.positionInCanvas["x"],
+            "right": this.positionInCanvas["x"] + this.sizeInCanvas["width"],
+            "bottom": this.positionInCanvas["y"] + this.sizeInCanvas["height"],
+            "top": this.positionInCanvas["y"]
+        };
+    }
+
     applyVelocity(velocityX, velocityY) {
         this.#positionInCanvas["x"] += velocityX;
         this.#positionInCanvas["y"] += velocityY;
@@ -70,10 +79,6 @@ export class CanvasImage {
 
     get sizeOfSourceImage() {
         return this.#sizeOfSourceImage;
-    }
-
-    set sizeOfSourceImage(size) {
-        this.#sizeOfSourceImage = size;
     }
 
 }

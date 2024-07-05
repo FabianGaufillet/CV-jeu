@@ -6,23 +6,26 @@ import {KeyboardEventsManager} from "./keyboardEventsManager.js";
 export class KeysPressedManager {
 
     #keyboardEventsManager;
-    #gamePaused = false;
-    #gamePausedTime = 0;
-    #backToMenu = false;
+    #gamePaused;
+    #gamePausedTime;
+    backToMenu;
 
     constructor() {
         this.#keyboardEventsManager = new KeyboardEventsManager();
+        this.#gamePaused = false;
+        this.#gamePausedTime = 0;
+        this.backToMenu = false;
     }
 
     manageKeysPressed(player) {
         const keysPressed = this.#keyboardEventsManager.keyPressed,
               keysPressedEntries = Object.entries(keysPressed),
               isKeyPressed = keysPressedEntries.filter(entry=> entry[0] !== "control" && entry[1]).length,
-              characterOrientation = player.sprites.currentState.at(-1);
+              characterOrientation = player.state.at(-1);
 
         if (keysPressed["escape"]) {
             this.#gamePaused = false;
-            this.#backToMenu = true;
+            this.backToMenu = true;
         }
         if (keysPressed["p"]) {
             if (Date.now() - this.#gamePausedTime >= COOLDOWN_BETWEEN_PAUSES) {
@@ -32,28 +35,28 @@ export class KeysPressedManager {
             return;
         }
         if (player.isDead) {
-            if (!player.sprites.currentState.startsWith("dead")) player.updateStateOfCharacter("dead"+characterOrientation);
+            if (!player.state.startsWith("dead")) player.updateStateOfCharacter("dead"+characterOrientation);
             return false;
         }
 
         if (player.onGround) {
-            if (!player.sprites.currentState.startsWith("idle") && !isKeyPressed) {
+            if (!player.state.startsWith("idle") && !isKeyPressed) {
                 player.updateStateOfCharacter("idle"+characterOrientation);
                 return false;
             }
 
             if (keysPressed["arrowLeft"] && !keysPressed["x"]) {
-                if (!keysPressed["control"] && player.sprites.currentState !== "walkL") {
+                if (!keysPressed["control"] && player.state !== "walkL") {
                     player.updateStateOfCharacter("walkL");
-                } else if (keysPressed["control"] && player.sprites.currentState !== "runL") {
+                } else if (keysPressed["control"] && player.state !== "runL") {
                     player.updateStateOfCharacter("runL");
                 }
             }
 
             if (keysPressed["arrowRight"] && !keysPressed["x"]) {
-                if (!keysPressed["control"] && player.sprites.currentState !== "walkR") {
+                if (!keysPressed["control"] && player.state !== "walkR") {
                     player.updateStateOfCharacter("walkR");
-                } else if (keysPressed["control"] && player.sprites.currentState !== "runR") {
+                } else if (keysPressed["control"] && player.state !== "runR") {
                     player.updateStateOfCharacter("runR");
                 }
             }
@@ -62,16 +65,16 @@ export class KeysPressedManager {
                 player.updateStateOfCharacter("jump"+characterOrientation);
             }
 
-            if (keysPressed["x"] && !player.sprites.currentState.startsWith("attack")) {
+            if (keysPressed["x"] && !player.state.startsWith("attack")) {
                 player.updateStateOfCharacter("attack"+characterOrientation);
             }
         } else {
             if (keysPressed["x"]) {
-                if (!player.sprites.currentState.startsWith("jumpAttack")) {
+                if (!player.state.startsWith("jumpAttack")) {
                     player.updateStateOfCharacter("jumpAttack"+characterOrientation);
                 }
             } else {
-                if (!["jumpL","jumpR"].includes(player.sprites.currentState)) {
+                if (!["jumpL","jumpR"].includes(player.state)) {
                     player.updateStateOfCharacter("jump"+characterOrientation);
                 }
             }
@@ -80,13 +83,5 @@ export class KeysPressedManager {
 
     get gamePaused() {
         return this.#gamePaused;
-    }
-
-    get backToMenu() {
-        return this.#backToMenu;
-    }
-
-    set backToMenu(backToMenuStatus) {
-        this.#backToMenu = backToMenuStatus;
     }
 }

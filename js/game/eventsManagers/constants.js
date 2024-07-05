@@ -1,3 +1,4 @@
 "use strict";
 
-export const DELAY_BEFORE_BACK_TO_LIFE = 5000;
+export const PLAYER_DELAY_BEFORE_BACK_TO_LIFE = 2000;
+export const ENEMY_DELAY_BEFORE_BACK_TO_LIFE = 5000;

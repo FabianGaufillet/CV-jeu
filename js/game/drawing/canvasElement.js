@@ -47,8 +47,15 @@ export class CanvasElement {
         }
     }
 
-    setBackgroundImage(image) {
-        this.htmlCanvasElement.style.backgroundImage = `url(${image})`;
+    drawText(text, font, x, y) {
+        this.#context.font = font;
+        this.#context.fillText(text, x*this.width, y*this.height, 0.2*this.width);
+    }
+
+    setBackgroundImage(backgroundIndex) {
+        const backgroundSizes = Array(3).fill("0");
+        backgroundSizes[backgroundIndex] = "cover";
+        this.htmlCanvasElement.style.backgroundSize = backgroundSizes.join(",");
     }
 
 }

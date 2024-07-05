@@ -1,6 +1,6 @@
 "use strict";
 
-import {MAX_ENEMIES, ROOT_PATH_IMAGE_LEVEL} from "./constants.js";
+import {AVAILABLE_ENEMIES, DIRECTIONS, MIN_ENEMIES, MAX_ENEMIES} from "./constants.js";
 import {Level} from "./level.js";
 import {Character} from "./character.js";
 import {Game} from "./game.js";
@@ -12,30 +12,27 @@ export class GameLauncher {
     #canvasElement;
     #menuLauncher;
     #game;
-    #availableEnemies;
-    #directions;
     #nbEnemies;
     #levels;
     #player;
     #digits;
     #enemies;
-    #ready = false;
+    #ready;
 
     constructor(htmlCanvasElement, canvasElement, menuLauncher) {
         this.#htmlCanvasElement = htmlCanvasElement;
         this.#canvasElement = canvasElement;
         this.#menuLauncher = menuLauncher;
+        this.#ready = false;
         this.#initLevel();
     }
 
     #initLevel() {
         Promise.all([Level.loadAvailableLevelsData(), Character.loadAvailableCharacters(), Digits.loadDigits()].flat())
             .then(() => {
-                this.#availableEnemies = ["zombie_female","zombie_male"];
-                this.#directions = ["L","R"];
-                this.#nbEnemies = Math.ceil(Math.random() * MAX_ENEMIES);
+                this.#nbEnemies = Math.max(MIN_ENEMIES,Math.ceil(Math.random() * MAX_ENEMIES));
                 this.#levels = [new Level(0),new Level(1)];
-                this.#player = new Character("knight","idle"+this.#directions.at(Math.floor(Math.random()*this.#directions.length)));
+                this.#player = new Character("knight","idle"+DIRECTIONS.at(Math.floor(Math.random()*DIRECTIONS.length)));
                 this.#digits =  [new Digits(), new Digits(), new Digits()];
                 this.#enemies = [];
                 this.#addEnemies();
@@ -46,8 +43,8 @@ export class GameLauncher {
 
     #addEnemies() {
         for (let i = 0; i < this.#nbEnemies; i++) {
-            const type = this.#availableEnemies[Math.floor(Math.random() * this.#availableEnemies.length)];
-            this.#enemies.push(new Character(type, "walk" + this.#directions.at(Math.floor(Math.random() * this.#directions.length))));
+            const type = AVAILABLE_ENEMIES[Math.floor(Math.random() * AVAILABLE_ENEMIES.length)];
+            this.#enemies.push(new Character(type, "walk" + DIRECTIONS.at(Math.floor(Math.random() * DIRECTIONS.length))));
         }
     }
 
@@ -61,7 +58,7 @@ export class GameLauncher {
     }
 
     launchGame() {
-        this.#canvasElement.setBackgroundImage(`${ROOT_PATH_IMAGE_LEVEL}/level${Level.currentLevel}.svg`);
+        this.#canvasElement.setBackgroundImage(Level.currentLevel+1);
         this.#game.loop();
     }
 

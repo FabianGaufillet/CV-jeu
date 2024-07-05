@@ -1,6 +1,12 @@
 "use strict";
 
-import {GAME_REFRESH_RATE} from "./constants.js";
+import {
+    GAME_REFRESH_RATE,
+    DELAY_BEFORE_ENEMY_STATE_CHANGE,
+    AVAILABLE_ENEMIES,
+    DIRECTIONS,
+    PROBABILITY_OF_ENEMY_APPEARANCE, DELAY_BEFORE_NEXT_ENEMY_APPEARANCE
+} from "./constants.js";
 import {Character} from "./character.js";
 import {CollisionsManager} from "../eventsManagers/collisionsManager.js";
 import {Score} from "./score.js";
@@ -19,7 +25,9 @@ export class Game {
     #score;
     #requestAnimationFrameID;
     #lastRefresh = Date.now();
+    #lastEnemyAddedTime = Date.now();
     #menuLauncher;
+    #pauseMessageOnDisplay = false;
 
     constructor(canvasElement, menuLauncher, levels, digits, player, enemies) {
         this.#canvasElement = canvasElement;
@@ -41,25 +49,57 @@ export class Game {
 
     loop() {
         if (Date.now() - this.#lastRefresh >= GAME_REFRESH_RATE) {
+            if (!this.#keysPressedManager.gamePaused) this.#pauseMessageOnDisplay = false;
             this.#lastRefresh = Date.now();
             if (this.#keysPressedManager.backToMenu) {
-                this.#keysPressedManager.backToMenu = false;
-                cancelAnimationFrame(this.#requestAnimationFrameID);
-                this.#menuLauncher.launchMenu();
+                this.#stopLoop();
                 return;
-            }
-            if (!this.#keysPressedManager.gamePaused) {
+            } else {
                 this.#keysPressedManager.manageKeysPressed(this.#player);
-                Character.updatePositionsOfCharacters(this.#player, ...this.#enemies);
-                Level.levelSelection(this.#score.currentScore,this.#canvasElement);
-                this.#levels[Level.currentLevel].ground.isCharacterOnGround(this.#player, ...this.#enemies);
-                this.#collisionHandler.detectCollision(this.#enemies,this.#score);
-                this.#canvasElement.drawImage(...this.#digits,...this.#enemies,this.#player);
-            } else if (this.#keysPressedManager.gamePaused) {
-                this.#keysPressedManager.manageKeysPressed(this.#player);
+                if (this.#keysPressedManager.gamePaused) {
+                    if (!this.#pauseMessageOnDisplay) {
+                        this.#canvasElement.drawText("JEU EN PAUSE","48px sans-serif", 0.4,0.5);
+                        this.#pauseMessageOnDisplay = true;
+                    }
+                }
+                else this.#updateGame();
             }
         }
         this.#requestAnimationFrameID = requestAnimationFrame(() => this.loop());
+    }
+
+    #stopLoop() {
+        this.#keysPressedManager.backToMenu = false;
+        cancelAnimationFrame(this.#requestAnimationFrameID);
+        this.#menuLauncher.launchMenu();
+    }
+
+    #updateGame() {
+        this.#updateEnemiesList();
+        this.#updateEnemiesState();
+        Character.updatePositionsOfCharacters(this.#player, ...this.#enemies);
+        Level.levelSelection(this.#score.currentScore,this.#canvasElement);
+        this.#levels[Level.currentLevel].ground.areCharactersOnGround(this.#player, ...this.#enemies);
+        this.#collisionHandler.detectCollision(this.#enemies,this.#score);
+        this.#canvasElement.drawImage(...this.#digits,...this.#enemies,this.#player);
+    }
+
+    #updateEnemiesList() {
+        const type = AVAILABLE_ENEMIES[Math.floor(Math.random() * AVAILABLE_ENEMIES.length)],
+              newEnemy = new Character(type, "walk" + DIRECTIONS.at(Math.floor(Math.random() * DIRECTIONS.length)));
+
+        if (Date.now() - this.#lastEnemyAddedTime < DELAY_BEFORE_NEXT_ENEMY_APPEARANCE) return;
+        this.#lastEnemyAddedTime = Date.now();
+        if (Math.random() > PROBABILITY_OF_ENEMY_APPEARANCE) return;
+        newEnemy.initCanvasImage();
+        this.#enemies.push(newEnemy);
+    }
+
+    #updateEnemiesState() {
+        for (const enemy of this.#enemies) {
+            if (Date.now() - enemy.lastStatusChangeTime < DELAY_BEFORE_ENEMY_STATE_CHANGE) continue;
+            enemy.setRandomState();
+        }
     }
 
 }

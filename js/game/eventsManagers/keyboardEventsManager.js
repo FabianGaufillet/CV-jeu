@@ -2,15 +2,22 @@
 
 export class KeyboardEventsManager {
 
-    #arrowLeft = false;
-    #arrowRight = false;
-    #arrowUp = false;
-    #control = false;
-    #x = false;
-    #p = false;
-    #escape = false;
+    #arrowLeft;
+    #arrowRight;
+    #arrowUp;
+    #control;
+    #x;
+    #p;
+    #escape;
 
     constructor() {
+        this.#arrowLeft = false;
+        this.#arrowRight = false;
+        this.#arrowUp = false;
+        this.#control = false;
+        this.#x = false;
+        this.#p = false;
+        this.#escape = false;
         this.#setEventsManager();
     }
 

@@ -2,11 +2,11 @@
 
 export class Sprite {
 
-    #currentState;
+    currentState;
     #currentIndexOfSprite;
 
     constructor(state,indexOfSprite) {
-        this.#currentState = state;
+        this.currentState = state;
         this.#currentIndexOfSprite = indexOfSprite;
     }
 
@@ -17,23 +17,19 @@ export class Sprite {
 
     #getNextSprite(sprites) {
         const previousIndexOfSprite = this.#currentIndexOfSprite;
-        if (!(previousIndexOfSprite === sprites.length-1 && this.#currentState.startsWith("dead"))) {
+        if (!(previousIndexOfSprite === sprites.length-1 && this.currentState.startsWith("dead"))) {
             this.#currentIndexOfSprite = (this.#currentIndexOfSprite + 1)%sprites.length;
         }
         return sprites[previousIndexOfSprite];
     }
 
     changeSprite(state) {
-        this.#currentState = state;
+        this.currentState = state;
         this.#currentIndexOfSprite = 0;
     }
 
-    get currentState() {
-        return this.#currentState;
-    }
-
-    set currentState(state) {
-        this.#currentState = state;
+    isCurrentAnimationFinished(sprites) {
+        return this.#currentIndexOfSprite === sprites.length-1;
     }
 
 }

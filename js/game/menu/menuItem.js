@@ -10,12 +10,12 @@ export class MenuItem {
     static #allMenuItemsData = {};
     static #allMenuItemsImages = {};
 
-    #type;
+    type;
     #sprites;
     #canvasImage;
 
     constructor(type,status) {
-        this.#type = type;
+        this.type = type;
         this.#sprites = new Sprite(status,0);
     }
 
@@ -43,7 +43,7 @@ export class MenuItem {
 
     initCanvasImage(posX,posY,width,height) {
         const currentState = this.#sprites["currentState"],
-              settings = MenuItem.#allMenuItemsData[this.#type][currentState];
+              settings = MenuItem.#allMenuItemsData[this.type][currentState];
 
         this.#canvasImage = new CanvasImage({
             "sourceImage":{
@@ -61,20 +61,16 @@ export class MenuItem {
         });
     }
 
-    get type() {
-        return this.#type;
-    }
-
     get sprites() {
         return this.#sprites;
     }
 
     get data() {
-        return MenuItem.#allMenuItemsData[this.#type];
+        return MenuItem.#allMenuItemsData[this.type];
     }
 
     get image() {
-        return MenuItem.#allMenuItemsImages[this.#type];
+        return MenuItem.#allMenuItemsImages[this.type];
     }
 
     get canvasImage() {

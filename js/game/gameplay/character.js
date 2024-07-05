@@ -20,20 +20,26 @@ export class Character {
     };
     static #allCharactersData = {};
     static #allCharactersImages = {};
+
     #type;
     #state;
     #sprites;
     #velocities;
     #canvasImage;
-    #onGround = true;
-    #isDead = false;
-    #fallingTime = null;
+    onGround;
+    isDead;
+    fallingTime;
+    lastStatusChangeTime;
 
     constructor(type,state) {
         this.#type = type;
         this.#state = state;
         this.#sprites = new Sprite(state,0);
         this.#velocities = new Velocity();
+        this.onGround = true;
+        this.isDead = false;
+        this.fallingTime = null;
+        this.lastStatusChangeTime = Date.now();
     }
 
     static #loadData(type) {
@@ -59,6 +65,23 @@ export class Character {
         ].flat();
     }
 
+    static updatePositionsOfCharacters(...characters) {
+        for (const character of characters) {
+            const currentState = character.state;
+            character.#sprites.setNextSprite(Character.#allCharactersData[character.#type][currentState]["moves"],character.#canvasImage);
+            character.#velocities.updateVelocities(
+                character.onGround,
+                currentState,
+                Character.#allCharactersData[character.#type][currentState]["velocityX"],
+                Character.#allCharactersData[character.#type][currentState]["velocityY"]
+            );
+            character.#canvasImage.applyVelocity(
+                character.#velocities.velocityX,
+                character.#velocities.velocityY
+            );
+        }
+    }
+
     initCanvasImage() {
         const currentState = this.#sprites["currentState"],
               moves = Character.#allCharactersData[this.#type][currentState]["moves"];
@@ -79,32 +102,24 @@ export class Character {
         });
     }
 
-    static updatePositionsOfCharacters(...characters) {
-        for (const character of characters) {
-            const currentState = character.sprites.currentState;
-            character.#sprites.setNextSprite(Character.#allCharactersData[character.#type][currentState]["moves"],character.#canvasImage);
-            character.#velocities.updateVelocities(
-                character.#onGround,
-                currentState,
-                Character.#allCharactersData[character.#type][currentState]["velocityX"],
-                Character.#allCharactersData[character.#type][currentState]["velocityY"]
-            );
-            character.#canvasImage.applyVelocity(
-                character.#velocities.velocityX,
-                character.#velocities.velocityY
-            );
-        }
-    }
-
     updateStateOfCharacter(state) {
+        this.lastStatusChangeTime = Date.now();
         this.#state = state;
         this.#sprites.changeSprite(state);
     }
 
-    comeBackToLife(status,delay) {
+    setRandomState() {
+        const states = ["idleL","idleR", "walkL","walkR"];
+        if (this.isDead) return;
+        let nextState = this.state;
+        while (nextState === this.sprites.currentState) nextState = states[Math.floor(Math.random() * states.length)];
+        this.updateStateOfCharacter(nextState);
+    }
+
+    comeBackToLife(delay) {
         setTimeout(() => {
             this.isDead = false;
-            this.updateStateOfCharacter(status);
+            this.setRandomState();
             this.#canvasImage.applyVelocity(Math.random(),Math.random());
         },delay);
     }
@@ -121,28 +136,16 @@ export class Character {
         return this.#canvasImage;
     }
 
-    get onGround() {
-        return this.#onGround;
+    get type() {
+        return this.#type;
     }
 
-    set onGround(status) {
-        this.#onGround = status;
+    get state() {
+        return this.#state;
     }
 
-    get isDead() {
-        return this.#isDead;
-    }
-
-    set isDead(deadStatus) {
-        this.#isDead = deadStatus;
-    }
-
-    get fallingTime() {
-        return this.#fallingTime;
-    }
-
-    set fallingTime(time) {
-        this.#fallingTime = time;
+    get moves() {
+        return Character.#allCharactersData[this.#type][this.#state]["moves"];
     }
 
 }

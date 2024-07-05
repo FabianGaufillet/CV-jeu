@@ -14,8 +14,7 @@ import {
     INFO_BUTTON_POSITION_X,
     INFO_BUTTON_POSITION_Y,
     PLAY_BUTTON_POSITION_X,
-    PLAY_BUTTON_POSITION_Y,
-    ROOT_PATH_IMAGE_MENU
+    PLAY_BUTTON_POSITION_Y
 } from "./constants.js";
 import {MenuItem} from "./menuItem.js";
 import {CanvasElement} from "../drawing/canvasElement.js";
@@ -78,7 +77,7 @@ export class Menu {
     }
 
     launchMenu() {
-        this.#canvasElement.setBackgroundImage(`${ROOT_PATH_IMAGE_MENU}/background.jpg`);
+        this.#canvasElement.setBackgroundImage(0);
         this.#canvasElement.drawImage(this.#playButton, this.#configButton, this.#infoButton);
         this.#mouseEventsManager.initializeMouseEventsHandler();
         this.#waitForGameLaunched();

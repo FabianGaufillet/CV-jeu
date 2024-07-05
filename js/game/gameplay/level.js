@@ -1,6 +1,6 @@
 "use strict";
 
-import {ROOT_PATH_DATA_LEVEL, ROOT_PATH_IMAGE_LEVEL, SCORE_REQUIRED_TO_CHANGE_LEVEL} from "./constants.js";
+import {ROOT_PATH_DATA_LEVEL, SCORE_REQUIRED_TO_CHANGE_LEVEL} from "./constants.js";
 import {Ground} from "./ground.js";
 
 export class Level {
@@ -10,6 +10,7 @@ export class Level {
     static currentLevel = 0;
     static nbLevels = 0;
     static scoreToReachForNextLevel = SCORE_REQUIRED_TO_CHANGE_LEVEL;
+
     #levelNumber;
 
     constructor(levelNumber) {
@@ -31,7 +32,7 @@ export class Level {
         if (score >= Level.scoreToReachForNextLevel) {
             Level.scoreToReachForNextLevel += SCORE_REQUIRED_TO_CHANGE_LEVEL;
             Level.currentLevel = (Level.currentLevel+1)%Level.nbLevels;
-            canvasElement.setBackgroundImage(`${ROOT_PATH_IMAGE_LEVEL}/level${Level.currentLevel}.svg`);
+            canvasElement.setBackgroundImage(Level.currentLevel+1);
         }
     }
 
