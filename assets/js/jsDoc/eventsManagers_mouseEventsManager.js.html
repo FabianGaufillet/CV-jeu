@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: eventsManagers/mouseEventsManager.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: eventsManagers/mouseEventsManager.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+
+import {MouseButtonPressedManager} from "./mouseButtonPressedManager.js";
+
+/** Classe permettant de détecter les événements liés à la sourir */
+export class MouseEventsManager {
+
+    /**
+     * @property {HTMLCanvasElement} #htmlCanvasElement Canvas sur lequel écouter les événements
+     */
+    #htmlCanvasElement;
+
+    /**
+     * @property {boolean} #mouseup Indique si le bouton de la souris est relâché
+     */
+    #mouseup = false;
+
+    /**
+     * @property {boolean} #mousedown Indique si le bouton de la souris est appuyé
+     */
+    #mousedown = false;
+
+    /**
+     * @property {boolean} #click Indique si un clic a eu lieu (succession de mousedown - mouseup)
+     */
+    #click = false;
+
+    /**
+     * @property {MouseButtonPressedManager} #mouseButtonPressedManager Gère les événements liés aux clics de souris
+     */
+    #mouseButtonPressedManager;
+
+    /**
+     * @property {string[]} #eventsList Ensemble des événements à écouter
+     */
+    #eventsList = ["mousemove","mousedown","mouseup","gameLaunched"];
+
+    /**
+     * @property {function} #mouseEventsHandler Fonction de callback à appeler au clic de souris
+     */
+    #mouseEventsHandler;
+
+    /**
+     * Créé une instance de MouseEventsManager
+     * @param {HTMLCanvasElement} htmlCanvasElement Canvas sur lequel écouter les événements
+     * @param {CanvasElement} canvasElement Informations et méthodes pour la balise Canvas
+     * @param {MenuItem[]} buttons Tous les boutons du menu principal
+     */
+    constructor(htmlCanvasElement, canvasElement, buttons) {
+        this.#htmlCanvasElement = htmlCanvasElement;
+        this.#mouseButtonPressedManager = new MouseButtonPressedManager(htmlCanvasElement, canvasElement, buttons);
+    }
+
+    /**
+     * Fonction qui met à jour les informations relatifs aux clics de souris
+     */
+    initializeMouseEventsHandler() {
+        this.#mouseEventsHandler = ev => {
+            if (ev.type === "gameLaunched") {
+                this.#eventsList.forEach(typeOfEvent => this.#htmlCanvasElement.removeEventListener(typeOfEvent, this.#mouseEventsHandler));
+            } else {
+                if (ev.type === "mouseup" &amp;&amp; ev.which === 1) {
+                    if (this.#mousedown) {
+                        this.#click = true;
+                        setTimeout(()=> this.#click = false,50);
+                    }
+                    this.#mouseup = true;
+                    this.#mousedown = false;
+                } else if (ev.type === "mousedown" &amp;&amp; ev.which === 1) {
+                    this.#mouseup = false;
+                    this.#mousedown = true;
+                }
+                this.#mouseButtonPressedManager.manageMouseButtonPressed(ev, this.#mousedown, this.#click);
+            }
+        }
+        this.#listenEvents();
+    }
+
+    /**
+     * Fonction qui ajoute un écouteur d'événements pour chaque événement défini
+     */
+    #listenEvents() {
+        this.#eventsList.forEach(typeOfEvent => {
+            this.#htmlCanvasElement.addEventListener(typeOfEvent, this.#mouseEventsHandler);
+        });
+    }
+
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CanvasElement.html">CanvasElement</a></li><li><a href="CanvasImage.html">CanvasImage</a></li><li><a href="Character.html">Character</a></li><li><a href="CollisionsManager.html">CollisionsManager</a></li><li><a href="Digits.html">Digits</a></li><li><a href="Game.html">Game</a></li><li><a href="GameLauncher.html">GameLauncher</a></li><li><a href="GameRewards.html">GameRewards</a></li><li><a href="Ground.html">Ground</a></li><li><a href="KeyboardEventsManager.html">KeyboardEventsManager</a></li><li><a href="KeysPressedManager.html">KeysPressedManager</a></li><li><a href="Level.html">Level</a></li><li><a href="Menu.html">Menu</a></li><li><a href="MenuItem.html">MenuItem</a></li><li><a href="MouseButtonPressedManager.html">MouseButtonPressedManager</a></li><li><a href="MouseEventsManager.html">MouseEventsManager</a></li><li><a href="Score.html">Score</a></li><li><a href="Sprite.html">Sprite</a></li><li><a href="Velocity.html">Velocity</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Sat Jul 06 2024 22:23:41 GMT+0200 (heure d’été d’Europe centrale)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
