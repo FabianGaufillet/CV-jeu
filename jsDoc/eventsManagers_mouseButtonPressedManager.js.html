@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: eventsManagers/mouseButtonPressedManager.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: eventsManagers/mouseButtonPressedManager.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+
+/** Classe permettant de définir l'action à effectuer en fonction des actions de l'utilisateur */
+export class MouseButtonPressedManager {
+
+    /**
+     * @property {HTMLCanvasElement} #htmlCanvasElement Canvas dont on récupère les dimensions
+     */
+    #htmlCanvasElement;
+
+    /**
+     * @property {CanvasElement} #canvasElement Informations et méthodes pour la balise Canvas
+     */
+    #canvasElement;
+
+    /**
+     * @property {MenuItem[]} #items Tous les boutons du menu principal
+     */
+    #items;
+
+    /**
+     * @property {string} #screen Écran du menu principal actuellement affiché
+     */
+    #screen = "mainMenu";
+
+    /**
+     * @property {Object&lt;string[]>} #screenItems Description des boutons à utiliser en fonction de l'écran affiché
+     */
+    #screenItems = {
+        "mainMenu": ["play","config","info"],
+        "config": ["back", "commands"],
+        "info": ["back", "about"]
+    };
+
+    /**
+     * Créé une instance de MouseButtonPressedManager
+     * @param {HTMLCanvasElement} htmlCanvasElement Canvas dont on récupère les dimensions
+     * @param {CanvasElement} canvasElement Informations et méthodes pour la balise Canvas
+     * @param {MenuItem[]} items Tous les boutons du menu principal
+     */
+    constructor(htmlCanvasElement, canvasElement, items) {
+        this.#htmlCanvasElement = htmlCanvasElement;
+        this.#canvasElement = canvasElement;
+        this.#items = items;
+    }
+
+    /**
+     * Fonction qui détermine l'action à effectuer en fonction de l'action de l'utilisateur
+     * @param {MouseEvent} ev Événement lié l'utilisation de la souris
+     * @param {boolean} mousedown Indique si le bouton est actuellement enfoncé
+     * @param {boolean} click Indique s'il y a eu un clic
+     */
+    manageMouseButtonPressed(ev, mousedown, click) {
+        const mouseX = ev.clientX-this.#htmlCanvasElement.offsetLeft,
+              mouseY = ev.clientY-this.#htmlCanvasElement.offsetTop,
+              concernedItems = this.#items.filter(item => this.#screenItems[this.#screen].includes(item.type));
+
+        for (const item of concernedItems) {
+            const itemCoords = this.#itemCoordinates(item),
+                  overItem = mouseX >= itemCoords["leftX"] &amp;&amp; mouseX &lt;= itemCoords["rightX"] &amp;&amp; mouseY >= itemCoords["topY"] &amp;&amp; mouseY &lt;= itemCoords["bottomY"];
+
+            let nextState = null;
+            if (overItem) {
+                if (click) {
+                    this.#handleClick(item);
+                    return;
+                } else if (!mousedown &amp;&amp; item.sprite.currentState !== "hover") {
+                    nextState = "hover";
+                } else if (mousedown &amp;&amp; item.sprite.currentState !== "click") {
+                    nextState = "click";
+                }
+            } else if (item.sprite.currentState !== "normal") nextState = "normal";
+
+            if (nextState) this.#updateSprite(item, nextState);
+        }
+        this.#canvasElement.drawImage(...concernedItems);
+    }
+
+    /**
+     * Retourne les coordonnées d'un élément du menu
+     * @param {MenuItem} item Élément du menu
+     * @returns {{leftX: number, topY: number, bottomY: number, rightX: number}} #itemCoordinates Coordonnées de l'élément
+     */
+    #itemCoordinates(item) {
+        return {
+            "leftX": item.canvasImage.positionInCanvas["x"]*this.#htmlCanvasElement.width,
+            "rightX": (item.canvasImage.positionInCanvas["x"] + item.canvasImage.sizeInCanvas["width"])*this.#htmlCanvasElement.width,
+            "topY": item.canvasImage.positionInCanvas["y"]*this.#htmlCanvasElement.height,
+            "bottomY": (item.canvasImage.positionInCanvas["y"] + item.canvasImage.sizeInCanvas["height"])*this.#htmlCanvasElement.height,
+        }
+    }
+
+    /**
+     * Met à jour le sprite d'un bouton
+     * @param {MenuItem} item Élément du menu concerné
+     * @param {string} nextState Nouvel état de l'élément à mettre à jour
+     */
+    #updateSprite(item, nextState) {
+        item.sprite.changeSprite(nextState);
+        item.sprite.setNextSprite(item.data[nextState],item.canvasImage);
+    }
+
+    /**
+     * Gestion du clic sur un élément du menu
+     * @param {MenuItem} item Élément du menu concerné
+     */
+    #handleClick(item) {
+        this.#updateSprite(item, "normal");
+        switch (item.type) {
+            case "play":
+                this.#play();
+                break;
+
+            case "config":
+            case "info":
+                this.#drawImage(item.type);
+                break;
+
+            case "back":
+                this.#drawImage("mainMenu");
+                break;
+        }
+    }
+
+    /**
+     * Gestion de l'appui sur le bouton "jouer"
+     */
+    #play() {
+        this.#htmlCanvasElement.dispatchEvent(new Event('gameLaunchAttempt'));
+    }
+
+    /**
+     * Affichage du menu et de toutes ses composantes
+     * @param {string} type Page du menu principal à afficher
+     */
+    #drawImage(type) {
+        this.#screen = type;
+        this.#canvasElement.drawImage(...this.#items.filter(item => this.#screenItems[this.#screen].includes(item.type)));
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CanvasElement.html">CanvasElement</a></li><li><a href="CanvasImage.html">CanvasImage</a></li><li><a href="Character.html">Character</a></li><li><a href="CollisionsManager.html">CollisionsManager</a></li><li><a href="Digits.html">Digits</a></li><li><a href="Game.html">Game</a></li><li><a href="GameLauncher.html">GameLauncher</a></li><li><a href="GameRewards.html">GameRewards</a></li><li><a href="Ground.html">Ground</a></li><li><a href="KeyboardEventsManager.html">KeyboardEventsManager</a></li><li><a href="KeysPressedManager.html">KeysPressedManager</a></li><li><a href="Level.html">Level</a></li><li><a href="Menu.html">Menu</a></li><li><a href="MenuItem.html">MenuItem</a></li><li><a href="MouseButtonPressedManager.html">MouseButtonPressedManager</a></li><li><a href="MouseEventsManager.html">MouseEventsManager</a></li><li><a href="Score.html">Score</a></li><li><a href="Sprite.html">Sprite</a></li><li><a href="Velocity.html">Velocity</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Sat Jul 06 2024 12:51:15 GMT+0200 (heure d’été d’Europe centrale)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

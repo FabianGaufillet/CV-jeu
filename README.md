@@ -6,3 +6,4 @@ Les détails techniques sont consultables dans le fichier PDF _DIW JS - Atelier 
 # Sources des images utilisées pour le jeu
 - https://www.gameart2d.com/
 - https://pixabay.com/users/ractapopulous-24766/
+- https://www.stickpng.com/

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: gameplay/gameLauncher.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: gameplay/gameLauncher.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+
+import {AVAILABLE_ENEMIES, DIRECTIONS, MIN_ENEMIES, MAX_ENEMIES} from "./constants.js";
+import {Level} from "./level.js";
+import {Character} from "./character.js";
+import {Game} from "./game.js";
+import {Digits} from "../drawing/digits.js";
+import {GameRewards} from "./gameRewards.js";
+
+/** Classe permettant de gérer le lancement du jeu */
+export class GameLauncher {
+
+    /**
+     * @property {HTMLCanvasElement} #htmlCanvasElement Canvas dans lequel dessiner
+     */
+    #htmlCanvasElement;
+
+    /**
+     * @property {CanvasElement} #canvasElement Informations et méthodes pour la balise Canvas
+     */
+    #canvasElement;
+
+    /**
+     * @property {MenuLauncher} #menuLauncher Pour revenir au menu principal
+     */
+    #menuLauncher;
+
+    /**
+     * @property {Game} #game Pour lancer une partie
+     */
+    #game;
+
+    /**
+     * @property {number} #nbEnemies Nombre d'ennemis au départ de la partie
+     */
+    #nbEnemies;
+
+    /**
+     * @property {Level[]} #levels Tous les niveaux de jeu
+     */
+    #levels;
+
+    /**
+     * @property {Character} #player Le joueur, avec toutes ses caractéristiques
+     */
+    #player;
+
+    /**
+     * @property {Digits[]} #digits Pour l'affichage du score
+     */
+    #digits;
+
+    /**
+     * @property {Character[]} #enemies Tous les ennemis présents dans le jeu
+     */
+    #enemies;
+
+    /**
+     * @property {GameRewards} #gameRewards Récompenses de jeu
+     */
+    #gameRewards;
+
+    /**
+     * @property {boolean} @ready Indique si le jeu est prêt à être lancé
+     */
+    #ready;
+
+    /**
+     * Créé un nouveau lanceur pour le jeu
+     * @param {HTMLCanvasElement} #htmlCanvasElement Canvas dans lequel dessiner
+     * @param {CanvasElement} #canvasElement Informations et méthodes pour la balise Canvas
+     * @param {MenuLauncher} #menuLauncher Pour revenir au menu principal
+     */
+    constructor(htmlCanvasElement, canvasElement, menuLauncher) {
+        this.#htmlCanvasElement = htmlCanvasElement;
+        this.#canvasElement = canvasElement;
+        this.#menuLauncher = menuLauncher;
+        this.#ready = false;
+        this.#initLevel();
+    }
+
+    /**
+     * Initialise l'intégralité des données relatives au jeu
+     */
+    #initLevel() {
+        Promise.all([Level.loadAvailableLevelsData(), Character.loadAvailableCharacters(), Digits.loadDigits(), GameRewards.loadRewards()].flat())
+            .then(() => {
+                this.#nbEnemies = Math.max(MIN_ENEMIES,Math.ceil(Math.random() * MAX_ENEMIES));
+                this.#levels = [new Level(0),new Level(1)];
+                this.#player = new Character("knight","idle"+DIRECTIONS.at(Math.floor(Math.random()*DIRECTIONS.length)));
+                this.#digits =  [new Digits(), new Digits(), new Digits()];
+                this.#gameRewards = Array(14).fill("").map(_el => new GameRewards());
+                this.#enemies = [];
+                this.#addEnemies();
+                this.#createNewGame();
+                this.#initAllCanvasImages();
+        });
+    }
+
+    /**
+     * Ajoute les premiers ennemis au début du jeu
+     */
+    #addEnemies() {
+        for (let i = 0; i &lt; this.#nbEnemies; i++) {
+            const type = AVAILABLE_ENEMIES[Math.floor(Math.random() * AVAILABLE_ENEMIES.length)];
+            this.#enemies.push(new Character(type, "walk" + DIRECTIONS.at(Math.floor(Math.random() * DIRECTIONS.length))));
+        }
+    }
+
+    /**
+     * Créé une nouvelle partie
+     */
+    #createNewGame() {
+        this.#game = new Game(this.#canvasElement, this.#menuLauncher, this.#levels, this.#digits, this.#player, this.#enemies, this.#gameRewards);
+    }
+
+    /**
+     * Initialise les informations relatives à la position et la taille de chaque image dans le canvas
+     */
+    #initAllCanvasImages() {
+        this.#game.initAllCanvasImages();
+        this.#ready = true;
+    }
+
+    /**
+     * Lance la partie une fois que tout a été correctement chargé
+     */
+    launchGame() {
+        this.#canvasElement.setBackgroundImage(Level.currentLevel+1);
+        this.#game.loop();
+    }
+
+    /**
+     * Indique si la partie est prête à être lancée
+     * @returns {boolean} Vrai si la partie peut être lancée, faux sinon.
+     */
+    get ready() {
+        return this.#ready;
+    }
+
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CanvasElement.html">CanvasElement</a></li><li><a href="CanvasImage.html">CanvasImage</a></li><li><a href="Character.html">Character</a></li><li><a href="CollisionsManager.html">CollisionsManager</a></li><li><a href="Digits.html">Digits</a></li><li><a href="Game.html">Game</a></li><li><a href="GameLauncher.html">GameLauncher</a></li><li><a href="GameRewards.html">GameRewards</a></li><li><a href="Ground.html">Ground</a></li><li><a href="KeyboardEventsManager.html">KeyboardEventsManager</a></li><li><a href="KeysPressedManager.html">KeysPressedManager</a></li><li><a href="Level.html">Level</a></li><li><a href="Menu.html">Menu</a></li><li><a href="MenuItem.html">MenuItem</a></li><li><a href="MouseButtonPressedManager.html">MouseButtonPressedManager</a></li><li><a href="MouseEventsManager.html">MouseEventsManager</a></li><li><a href="Score.html">Score</a></li><li><a href="Sprite.html">Sprite</a></li><li><a href="Velocity.html">Velocity</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Sat Jul 06 2024 12:51:15 GMT+0200 (heure d’été d’Europe centrale)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

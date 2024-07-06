@@ -3,13 +3,32 @@
 import {COOLDOWN_BETWEEN_PAUSES} from "../gameplay/constants.js";
 import {KeyboardEventsManager} from "./keyboardEventsManager.js";
 
+/** Classe permettant de définir les actions à mener en fonction des actions de l'utilisateur */
 export class KeysPressedManager {
 
+    /**
+     * @property {KeyboardEventsManager} #keyboardEventsManager Gestionnaire d'événements liés aux frappes sur le clavier
+     */
     #keyboardEventsManager;
+
+    /**
+     * @property {boolean} #gamePaused Indique si le jeu est en pause
+     */
     #gamePaused;
+
+    /**
+     * @property {number} #gamePausedTime Timestamp depuis la mise en pause du jeu
+     */
     #gamePausedTime;
+
+    /**
+     * @property {boolean} backToMenu Indique si le joueur a demandé à revenir au menu principal
+     */
     backToMenu;
 
+    /**
+     * Créé une instance de KeysPressedManager
+     */
     constructor() {
         this.#keyboardEventsManager = new KeyboardEventsManager();
         this.#gamePaused = false;
@@ -17,6 +36,10 @@ export class KeysPressedManager {
         this.backToMenu = false;
     }
 
+    /**
+     * Définis les actions à mener en fonction des appuis de l'utilisateur
+     * @param {Character} player Informations sur le joueur (en vie, sur un sol, ...)
+     */
     manageKeysPressed(player) {
         const keysPressed = this.#keyboardEventsManager.keyPressed,
               keysPressedEntries = Object.entries(keysPressed),
@@ -81,6 +104,10 @@ export class KeysPressedManager {
         }
     }
 
+    /**
+     * Indique si le jeu est en pause
+     * @returns {boolean} Vrai, le jeu est en pause; faux il est en cours.
+     */
     get gamePaused() {
         return this.#gamePaused;
     }

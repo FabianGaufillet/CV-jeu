@@ -1,15 +1,46 @@
 "use strict";
 
+/** Classe permettant de répertorier les touches sur lesquelles le joueur appuie */
 export class KeyboardEventsManager {
 
+    /**
+     * @property {boolean} #arrowLeft Indique si le joueur appuie sur la touche de gauche
+     */
     #arrowLeft;
+
+    /**
+     * @property {boolean} #arrowLeft Indique si le joueur appuie sur la touche de droite
+     */
     #arrowRight;
+
+    /**
+     * @property {boolean} #arrowLeft Indique si le joueur appuie sur la touche du haut
+     */
     #arrowUp;
+
+    /**
+     * @property {boolean} #arrowLeft Indique si le joueur appuie sur la touche "Ctrl"
+     */
     #control;
+
+    /**
+     * @property {boolean} #arrowLeft Indique si le joueur appuie sur la touche "x"
+     */
     #x;
+
+    /**
+     * @property {boolean} #arrowLeft Indique si le joueur appuie sur la touche "p"
+     */
     #p;
+
+    /**
+     * @property {boolean} #arrowLeft Indique si le joueur appuie sur la touche "Échap"
+     */
     #escape;
 
+    /**
+     * Créé une instance de KeyboardEventsManager
+     */
     constructor() {
         this.#arrowLeft = false;
         this.#arrowRight = false;
@@ -21,9 +52,13 @@ export class KeyboardEventsManager {
         this.#setEventsManager();
     }
 
+    /**
+     * Définit l'écouteur d'événements sur les frappes au clavier du joueur
+     */
     #setEventsManager() {
         document.addEventListener("keydown", (event) => {
 
+            event.preventDefault();
             if (event.repeat) return false;
             switch(event.key) {
 
@@ -102,6 +137,10 @@ export class KeyboardEventsManager {
         });
     }
 
+    /**
+     * Retourne l'ensemble des états des différentes touches
+     * @returns {{p, arrowLeft, x, control, arrowUp, escape, arrowRight}} État des touches utiles au jeu
+     */
     get keyPressed() {
         return {
             "arrowLeft": this.#arrowLeft,

@@ -21,19 +21,63 @@ import {CanvasElement} from "../drawing/canvasElement.js";
 import {GameLauncher} from "../gameplay/gameLauncher.js";
 import {MouseEventsManager} from "../eventsManagers/mouseEventsManager.js";
 
+/** Classe décrivant le menu principal */
 export class Menu {
 
+    /**
+     * @property {HTMLCanvasElement} #htmlCanvasElement Canvas dans lequel dessiner
+     */
     #htmlCanvasElement;
+
+    /**
+     * @property {CanvasElement} #canvasElement Informations et méthodes pour la balise Canvas
+     */
     #canvasElement;
+
+    /**
+     * @property {GameLauncher} #gameLauncher Tout le nécessaire pour lancer le jeu
+     */
     #gameLauncher;
+
+    /**
+     * @property {MenuItem} #playButton Bouton de lancement de partie
+     */
     #playButton;
+
+    /**
+     * @property {MenuItem} #configButton Bouton pour affichage des commandes
+     */
     #configButton;
+
+    /**
+     * @property {MenuItem} #infoButton Bouton pour affichage du scénario
+     */
     #infoButton;
+
+    /**
+     * @property {MenuItem} #backButton Bouton pour retour au menu principal
+     */
     #backButton;
+
+    /**
+     * @property {MenuItem} #commands Graphique montrant les commandes
+     */
     #commands;
+
+    /**
+     * @property {MenuItem} #about Graphique montrant le scénario
+     */
     #about;
+
+    /**
+     * @property {MouseEventsManager} #mouseEventsManager Tout le nécessaire pour gérer les événements liés à la souris
+     */
     #mouseEventsManager;
 
+    /**
+     * Créé le menu principal du jeu
+     * @param {HTMLCanvasElement} htmlCanvasElement Canvas dans lequel dessiner
+     */
     constructor(htmlCanvasElement) {
         this.#htmlCanvasElement = htmlCanvasElement;
         this.#canvasElement = new CanvasElement(htmlCanvasElement);
@@ -41,6 +85,9 @@ export class Menu {
         this.#initMenu();
     }
 
+    /**
+     * Initialise le menu (chargement des items, des images, du gestionnaire d'événements liés à la souris ...)
+     */
     #initMenu() {
         Promise.all(MenuItem.loadAvailableMenuItems())
             .then(() => {
@@ -56,6 +103,9 @@ export class Menu {
             });
     }
 
+    /**
+     * Initialisation des images (position, taille) pour affichage dans la balise canvas
+     */
     initCanvasImages() {
         this.#playButton.initCanvasImage(PLAY_BUTTON_POSITION_X, PLAY_BUTTON_POSITION_Y, BUTTON_WIDTH, BUTTON_HEIGHT);
         this.#configButton.initCanvasImage(CONFIG_BUTTON_POSITION_X, CONFIG_BUTTON_POSITION_Y, BUTTON_WIDTH, BUTTON_HEIGHT);
@@ -65,6 +115,10 @@ export class Menu {
         this.#about.initCanvasImage(ABOUT_POSITION_X, ABOUT_POSITION_Y, ABOUT_WIDTH, ABOUT_HEIGHT);
     }
 
+    /**
+     * Définition d'un écouteur sur l'événement "gameLaunchAttempt" déclenché après clic sur le bouton "playButton"
+     * Lance la partie si tous les éléments du jeu sont chargés
+     */
     #waitForGameLaunched() {
         const gameLaunchAttempt = () => {
             if (this.#gameLauncher.ready) {
@@ -76,6 +130,9 @@ export class Menu {
         this.#htmlCanvasElement.addEventListener("gameLaunchAttempt", gameLaunchAttempt);
     }
 
+    /**
+     * Lance le menu : définition de l'image de fond, dessin des boutons et écoute d'événements
+     */
     launchMenu() {
         this.#canvasElement.setBackgroundImage(0);
         this.#canvasElement.drawImage(this.#playButton, this.#configButton, this.#infoButton);
