@@ -28,9 +28,9 @@ export class GameLauncher {
     #canvasElement;
 
     /**
-     * @property {MenuLauncher} #menuLauncher Pour revenir au menu principal
+     * @property {Menu} #menu Pour revenir au menu principal
      */
-    #menuLauncher;
+    #menu;
 
     /**
      * @property {Game} #game Pour lancer une partie
@@ -76,12 +76,12 @@ export class GameLauncher {
      * Créé un nouveau lanceur pour le jeu
      * @param {HTMLCanvasElement} htmlCanvasElement Canvas dans lequel dessiner
      * @param {CanvasElement} canvasElement Informations et méthodes pour la balise Canvas
-     * @param {MenuLauncher} menuLauncher Pour revenir au menu principal
+     * @param {Menu} menu Pour revenir au menu principal
      */
-    constructor(htmlCanvasElement, canvasElement, menuLauncher) {
+    constructor(htmlCanvasElement, canvasElement, menu) {
         this.#htmlCanvasElement = htmlCanvasElement;
         this.#canvasElement = canvasElement;
-        this.#menuLauncher = menuLauncher;
+        this.#menu = menu;
         this.#ready = false;
         this.#initLevel();
     }
@@ -90,7 +90,7 @@ export class GameLauncher {
      * Initialise l'intégralité des données relatives au jeu
      */
     #initLevel() {
-        Promise.all([Level.loadAvailableLevelsData(), Character.loadAvailableCharacters(), Digits.loadDigits(), GameRewards.loadRewards()].flat())
+        Promise.all([Level.loadAvailableLevelsData(), Character.loadAvailableCharacters(), Digits.loadDigits(), GameRewards.loadData()].flat())
             .then(() => {
                 this.#nbEnemies = Math.max(MIN_ENEMIES,Math.ceil(Math.random() * MAX_ENEMIES));
                 this.#levels = [new Level(0),new Level(1)];
@@ -127,7 +127,7 @@ export class GameLauncher {
      * Créé une nouvelle partie
      */
     #createNewGame() {
-        this.#game = new Game(this.#canvasElement, this.#menuLauncher, this.#levels, this.#digits, this.#player, this.#enemies, this.#gameRewards);
+        this.#game = new Game(this.#canvasElement, this.#menu, this.#levels, this.#digits, this.#player, this.#enemies, this.#gameRewards);
     }
 
     /**

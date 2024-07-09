@@ -77,10 +77,11 @@ export class Menu {
     /**
      * Créé le menu principal du jeu
      * @param {HTMLCanvasElement} htmlCanvasElement Canvas dans lequel dessiner
+     * @param {HTMLElement} container Container dans lequel se situe le Canvas
      */
-    constructor(htmlCanvasElement) {
+    constructor(htmlCanvasElement, container) {
         this.#htmlCanvasElement = htmlCanvasElement;
-        this.#canvasElement = new CanvasElement(htmlCanvasElement);
+        this.#canvasElement = new CanvasElement(htmlCanvasElement, container);
         this.#gameLauncher = new GameLauncher(this.#htmlCanvasElement, this.#canvasElement, this);
         this.#initMenu();
     }

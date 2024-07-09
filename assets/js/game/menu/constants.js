@@ -2,8 +2,8 @@
 
 export const ROOT_PATH_DATA_MENU = "./assets/data/menu";
 export const ROOT_PATH_IMAGE_MENU = "./assets/images/menu";
-export const BUTTON_WIDTH = 0.10;
-export const BUTTON_HEIGHT = 0.10;
+export const BUTTON_WIDTH = 0.07;
+export const BUTTON_HEIGHT = 0.105;
 export const PLAY_BUTTON_POSITION_X = 0.25;
 export const PLAY_BUTTON_POSITION_Y = 0.45;
 export const CONFIG_BUTTON_POSITION_X = 0.45;

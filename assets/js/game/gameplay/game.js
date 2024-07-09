@@ -140,7 +140,6 @@ export class Game {
         this.#player.initCanvasImage();
         this.#enemies.map(enemy => enemy.initCanvasImage());
         this.#digits.map((digit,i) => digit.initCanvasImage(i));
-        this.#gameRewards.map((reward,i) => reward.initCanvasImage(i));
     }
 
     /**
@@ -192,7 +191,7 @@ export class Game {
         this.#updateRewards();
         currentLevel.ground.areCharactersOnGround(this.#player, ...this.#enemies);
         this.#collisionHandler.detectCollision(this.#enemies,this.#score);
-        this.#canvasElement.drawImage(...this.#digits,...this.#enemies, this.#player, ...this.#gameRewards);
+        this.#canvasElement.drawImage(...this.#digits,...this.#enemies, this.#player);
     }
 
     /**

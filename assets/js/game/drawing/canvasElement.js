@@ -28,12 +28,25 @@ export class CanvasElement {
     /**
      * Créé une instance de CanvasElement
      * @param {HTMLCanvasElement} htmlCanvasElement Canvas dans lequel dessiner
+     * @param {HTMLElement} container Container dans lequel se situe le Canvas
      */
-    constructor(htmlCanvasElement) {
+    constructor(htmlCanvasElement, container) {
+        this.#setCanvasElementSize(htmlCanvasElement, container);
+        window.addEventListener("resize", () => this.#setCanvasElementSize(htmlCanvasElement, container));
+        this.#context = this.#getContext(htmlCanvasElement);
+    }
+
+    /**
+     * Fonction permettant de paramétrer la largeur et la hauteur du canvas afin de conserver la ratio largeur/hauteur
+     * @param {HTMLCanvasElement} htmlCanvasElement Canvas dans lequel dessiner
+     * @param {HTMLElement} container Balise parente du canvas
+     */
+    #setCanvasElementSize(htmlCanvasElement, container) {
+        htmlCanvasElement.width = container.clientWidth;
+        htmlCanvasElement.height = container.clientHeight;
         this.htmlCanvasElement = htmlCanvasElement;
         this.width = htmlCanvasElement.width;
         this.height = htmlCanvasElement.height;
-        this.#context = this.#getContext(htmlCanvasElement);
     }
 
     /**
@@ -103,7 +116,7 @@ export class CanvasElement {
      */
     setBackgroundImage(backgroundIndex) {
         const backgroundSizes = Array(NB_BACKGROUNDS).fill("0");
-        backgroundSizes[backgroundIndex] = "cover";
+        backgroundSizes[backgroundIndex] = "100% 100%";
         this.htmlCanvasElement.style.backgroundSize = backgroundSizes.join(",");
     }
 
