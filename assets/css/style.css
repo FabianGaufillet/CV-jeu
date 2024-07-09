@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'kodemono';
-    src: url('../../vendors/fonts/KodeMono/KodeMono-VariableFont_wght.ttf');
+    src: url('../../vendors/fonts/kodeMono/KodeMono-VariableFont_wght.ttf');
 }
 
 * {
@@ -11,10 +11,20 @@
 
 :root {
     --body-font: 'kodemono';
-    --body-backgroundColor: #010038;
-    --body-textColor: #F39422;
-    --sidebar-backgroundcolor: #293A80;
-    --footer-backgroundColor: #537EC5;
+    --body-menu-backgroundColor: #6F4E37;
+    --body-menu-textColor: #FED8B1;
+    --sidebar-menu-backgroundcolor: #A67B5B;
+    --footer-menu-backgroundColor: #ECB176;
+
+    --body-level0-backgroundColor: #006769;
+    --body-level0-textColor: #E6FF94;
+    --sidebar-level0-backgroundcolor: #40A578;
+    --footer-level0-backgroundColor: #9DDE8B;
+
+    --body-level1-backgroundColor: #010038;
+    --body-level1-textColor: #F39422;
+    --sidebar-level1-backgroundcolor: #293A80;
+    --footer-level1-backgroundColor: #537EC5;
 }
 
 .mr-1vw {
@@ -31,7 +41,6 @@ li {
 
 a {
     text-decoration: none;
-    color: var(--body-textColor);
 }
 
 h1 {
@@ -41,8 +50,6 @@ h1 {
 body {
     width: 100vw;
     height: 100vh;
-    background-color: var(--body-backgroundColor);
-    color: var(--body-textColor);
     font-family: var(--body-font), sans-serif;
     overflow: hidden;
     display: grid;
@@ -60,6 +67,19 @@ body {
         ". sidebar . main main main main main main ."
         ". sidebar . main main main main main main ."
         "footer footer footer footer footer footer footer footer footer footer";
+    transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
+    &.bodyMenu {
+        background-color: var(--body-menu-backgroundColor);
+        color: var(--body-menu-textColor);
+    }
+    &.bodyLevel0 {
+        background-color: var(--body-level0-backgroundColor);
+        color: var(--body-level0-textColor);
+    }
+    &.bodyLevel1 {
+        background-color: var(--body-level1-backgroundColor);
+        color: var(--body-level1-textColor);
+    }
 }
 
 header {
@@ -72,19 +92,43 @@ header {
 
 .sidebar {
     grid-area: sidebar;
-    background-color: var(--sidebar-backgroundcolor);
     padding: 2rem;
     border-radius: 2rem;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
+    transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
+    &.sidebarMenu {
+        background-color: var(--sidebar-menu-backgroundcolor);
+        & li:hover {
+            background-color: var(--footer-menu-backgroundColor);
+        }
+        & a {
+            color : var(--body-menu-textColor);
+        }
+    }
+    &.sidebarLevel0 {
+        background-color: var(--sidebar-level0-backgroundcolor);
+        & li:hover {
+            background-color: var(--footer-level0-backgroundColor);
+        }
+        & a {
+            color: var(--body-level0-textColor);
+        }
+    }
+    &.sidebarLevel1 {
+        background-color: var(--sidebar-level1-backgroundcolor);
+        & li:hover {
+            background-color: var(--footer-level1-backgroundColor);
+        }
+        & a {
+            color: var(--body-level1-textColor);
+        }
+    }
     & li {
         border-radius: 1rem;
         padding: 1rem;
-    }
-    & li:hover {
-        background-color: var(--footer-backgroundColor);
     }
     & .rewards {
         display: grid;
@@ -114,10 +158,19 @@ main {
 
 footer {
     grid-area: footer;
-    background-color: var(--footer-backgroundColor);
     display: flex;
     justify-content: space-around;
     align-items: center;
+    transition: background-color 0.5s ease-in-out;
+    &.footerMenu {
+        background-color: var(--footer-menu-backgroundColor);
+    }
+    &.footerLevel0 {
+        background-color: var(--footer-level0-backgroundColor);
+    }
+    &.footerLevel1 {
+        background-color: var(--footer-level1-backgroundColor);
+    }
     & a {
         color: black;
     }
@@ -128,6 +181,73 @@ canvas#game {
     background-image: url("../images/menu/background.jpg"), url("../images/levels/level0.svg"), url(../images/levels/level1.svg);
     background-repeat: no-repeat, no-repeat, no-repeat;
     background-position: center, center, center;
+}
+
+.modal {
+    background-color: #006769;
+    border: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.4rem;
+    width: 25vw;
+    padding: 1.3rem;
+    min-width: 250px;
+    min-height: 250px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 15px;
+    z-index: 2;
+}
+
+.modal p {
+    font-size: 0.9rem;
+    color: #777;
+    margin: 0.4rem 0 0.2rem;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    font-weight: 600;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.8rem 1.4rem;
+    font-weight: 700;
+    background-color: black;
+    color: white;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 1rem;
+}
+
+.btn-close {
+    align-self: end;
+    transform: translate(10px, -20px);
+    padding: 0.5rem 0.7rem;
+    background: #eee;
+    border-radius: 50%;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+    z-index: 1;
+}
+
+.hidden {
+    display: none;
 }
 
 @media screen and (max-width: 900px),

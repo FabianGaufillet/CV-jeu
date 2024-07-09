@@ -6,7 +6,7 @@ import {
     MIN_ENEMIES,
     MAX_ENEMIES,
     PLAYER_INITIAL_STATE,
-    ENEMIES_INITIAL_STATE
+    ENEMIES_INITIAL_STATE, NB_REWARDS
 } from "./constants.js";
 import {Level} from "./level.js";
 import {Character} from "./character.js";
@@ -96,7 +96,7 @@ export class GameLauncher {
                 this.#levels = [new Level(0),new Level(1)];
                 this.#player = new Character("knight", this.#setState(PLAYER_INITIAL_STATE));
                 this.#digits =  [new Digits(), new Digits(), new Digits()];
-                this.#gameRewards = Array(14).fill("").map(_el => new GameRewards());
+                this.#gameRewards = Array(NB_REWARDS).fill("").map(_el => new GameRewards());
                 this.#enemies = [];
                 this.#addEnemies();
                 this.#createNewGame();
@@ -142,7 +142,7 @@ export class GameLauncher {
      * Lance la partie une fois que tout a été correctement chargé
      */
     launchGame() {
-        this.#canvasElement.setBackgroundImage(Level.currentLevel+1);
+        this.#canvasElement.setColorPalette(Level.currentLevel+1);
         this.#game.loop();
     }
 

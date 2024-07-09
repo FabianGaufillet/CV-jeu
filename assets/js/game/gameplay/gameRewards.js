@@ -1,6 +1,6 @@
 "use strict";
 
-import {ROOT_PATH_DATA_REWARDS, SKILL_LOCKED_OPACITY, SKILL_UNLOCKED_OPACITY,} from "./constants.js";
+import {ROOT_PATH_DATA_REWARDS, SKILL_LOCKED_OPACITY, SKILL_UNLOCKED_OPACITY} from "./constants.js";
 
 /** Classe permettant la gestion des récompenses */
 export class GameRewards {

@@ -73,7 +73,7 @@ export class Level {
         if (score >= Level.scoreToReachForNextLevel) {
             Level.scoreToReachForNextLevel += SCORE_REQUIRED_TO_CHANGE_LEVEL;
             Level.currentLevel = (Level.currentLevel+1)%Level.nbLevels;
-            canvasElement.setBackgroundImage(Level.currentLevel+1);
+            canvasElement.setColorPalette(Level.currentLevel+1);
         }
     }
 

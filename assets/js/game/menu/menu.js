@@ -120,7 +120,7 @@ export class Menu {
      * Lance le menu : définition de l'image de fond, dessin des boutons et écoute d'événements
      */
     launchMenu() {
-        this.#canvasElement.setBackgroundImage(0);
+        this.#canvasElement.setColorPalette(0);
         this.#canvasElement.drawImage(this.#playButton, this.#configButton, this.#infoButton);
         this.#mouseEventsManager.initializeMouseEventsHandler();
         this.#waitForGameLaunched();

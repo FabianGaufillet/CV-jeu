@@ -111,12 +111,34 @@ export class CanvasElement {
     }
 
     /**
-     * Fonction permettant de définir l'image de fond du canvas
-     * @param {number} backgroundIndex Indice du fond sélectionné
+     * Fonction permettant de définir la palette de couleurs à utiliser
+     * @param {number} index Palette de couleurs sélectionnée
      */
-    setBackgroundImage(backgroundIndex) {
+    setColorPalette(index) {
+        const body = document.querySelector("body"),
+              sidebar = document.querySelector(".sidebar"),
+              footer = document.querySelector("footer"),
+              htmlElements = {"body": body, "sidebar":sidebar, "footer":footer},
+              screens = ["Menu","Level0","Level1"];
+
+        ["body","sidebar","footer"].forEach((element) => {
+            const htmlElement = htmlElements[element];
+            for (let i=0; i<screens.length; i++) {
+                if (i === index) htmlElement.classList.add(`${element}${screens.at(i)}`);
+                else htmlElement.classList.remove(`${element}${screens.at(i)}`);
+            }
+        });
+        this.#setBackgroundImage(index);
+
+    }
+
+    /**
+     * Fonction permettant de définir l'image de fond du canvas
+     * @param index
+     */
+    #setBackgroundImage(index) {
         const backgroundSizes = Array(NB_BACKGROUNDS).fill("0");
-        backgroundSizes[backgroundIndex] = "100% 100%";
+        backgroundSizes[index] = "100% 100%";
         this.htmlCanvasElement.style.backgroundSize = backgroundSizes.join(",");
     }
 

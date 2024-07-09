@@ -11,11 +11,11 @@
     <script src="./assets/js/main.js" type="module"></script>
     <title>CV - jeu</title>
 </head>
-<body>
+<body class="bodyMenu">
 <header>
     <h1><i class="fa-brands fa-fort-awesome mr-1vw"></i>La quête du CV<i class="fa-brands fa-fort-awesome ml-1vw"></i></h1>
 </header>
-<div class="sidebar">
+<div class="sidebar sidebarMenu">
     <ul>
         <li title="Cliquez pour accéder à mon CV"><a href="./assets/CV_Fabian_Gaufillet.pdf" target="_blank" class="cv"><i class="fa-solid fa-scroll"><span class="ml-1vw">CV</span></i></a></li>
         <li title="Documentation pour les développeurs"><a href="./assets/js/jsDoc/index.html" target="_blank"><i class="fa-solid fa-book-skull"><span class="ml-1vw">Doc JS</span></i></a></li>
@@ -43,11 +43,25 @@
         Un petit jeu en 2D fait avec passion.
     </canvas>
 </main>
-<footer>
+<footer class="footerMenu">
     <a href="#"><i class="fa-solid fa-user"></i><span class="ml-1vw">Fabian GAUFILLET</span></a>
     <a href="mailto: gaufillet.fabian@orange.fr"><i class="fa-solid fa-envelope"></i><span class="ml-1vw">gaufillet.fabian@orange.fr</span></a>
     <a href="tel:0682541103"><i class="fa-solid fa-phone"></i><span class="ml-1vw">06 82 54 11 03</span></a>
     <a href="https://github.com/FabianGaufillet" target="_blank"><i class="fa-brands fa-github"></i><span class="ml-1vw">github.com/FabianGaufillet</span></a>
 </footer>
+
+<!-- Modèle de modale tiré de https://www.freecodecamp.org/news/how-to-build-a-modal-with-javascript/ -->
+<section class="modal hidden">
+    <button class="btn-close">⨉</button>
+    <div>
+        <i class="fa-solid fa-hands-clapping fa-xl mr-1vw"></i><strong>FELICITATIONS !</strong>
+    </div>
+    <div>
+        <p>Vous avez débloqué toutes les compétences ! Vous pouvez désormais accéder à mon CV ou continuer à jouer.</p>
+    </div>
+    <button class="btn">OK</button>
+</section>
+<div class="overlay hidden"></div>
+
 </body>
 </html>

@@ -9,12 +9,9 @@ import {
     DELAY_BEFORE_NEXT_ENEMY_APPEARANCE,
     PAUSE_MESSAGE,
     FONT_MESSAGE,
-    END_OF_GAME_MESSAGE,
     ENEMIES_INITIAL_STATE,
     PAUSE_MESSAGE_POSX,
-    PAUSE_MESSAGE_POSY,
-    END_OF_GAME_MESSAGE_POSX,
-    END_OF_GAME_MESSAGE_POSY, END_OF_GAME_MESSAGE_GAP, DELAY_BEFORE_END_OF_GAME_MESSAGE_DISAPPEARANCE
+    PAUSE_MESSAGE_POSY
 } from "./constants.js";
 import {Character} from "./character.js";
 import {CollisionsManager} from "../eventsManagers/collisionsManager.js";
@@ -242,12 +239,18 @@ export class Game {
      * Gestion de la victoire
      */
     #handleEndOfGame() {
+        const modal = document.querySelector(".modal"),
+              overlay = document.querySelector(".overlay");
+
         if (!this.#winMessageOnDisplay) {
             this.#winMessageOnDisplay = true;
-            for (let i=0; i<END_OF_GAME_MESSAGE.length; i++) {
-                this.#canvasElement.drawText(END_OF_GAME_MESSAGE[i], FONT_MESSAGE, END_OF_GAME_MESSAGE_POSX, END_OF_GAME_MESSAGE_POSY+END_OF_GAME_MESSAGE_GAP*i);
+            modal.classList.remove("hidden");
+            overlay.classList.remove("hidden");
+        } else {
+            if (modal.classList.contains("hidden")) {
+                this.#winMessageOnDisplay = false;
+                this.#win = null;
             }
-            setTimeout(() => this.#win = null, DELAY_BEFORE_END_OF_GAME_MESSAGE_DISAPPEARANCE);
         }
     }
 
