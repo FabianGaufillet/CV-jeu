@@ -3,12 +3,20 @@ import {Menu} from "./game/menu/menu.js";
 (function() {
     'use strict';
 
+    /**
+     * Fonction permettant d'afficher toutes les compétences d'un seul coup
+     * @function showAllRewards
+     */
     function showAllRewards() {
         document.querySelectorAll("div.rewards > i").forEach((item) => {
             item.style.opacity = "1.0";
         });
     }
 
+    /**
+     * Fonction permettant de gérer les actions de l'utilisateur sur la modale
+     * @function handleModal
+     */
     function handleModal() {
         const modal = document.querySelector(".modal"),
             overlay = document.querySelector(".overlay"),

@@ -19,4 +19,4 @@ export const COMMANDS_HEIGHT = 0.80;
 export const ABOUT_POSITION_X = 0.10;
 export const ABOUT_POSITION_Y = 0;
 export const ABOUT_WIDTH = 0.80;
-export const ABOUT_HEIGHT = 0.80;
+export const ABOUT_HEIGHT = 0.90;
