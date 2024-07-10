@@ -16,7 +16,7 @@ export class Character {
     /**
      * @property {string[]} Character.#availableTypes Tous les types de personnages disponibles
      */
-    static #availableTypes = ["knight", "zombie_female", "zombie_male"];
+    static #availableTypes = ["knight", "zombie_female", "zombie_male", "adventure_girl"];
 
     /**
      * @property {Object<string[]>} Character.#availableStates Tous les états possibles en fonction du type de personnage
@@ -24,7 +24,8 @@ export class Character {
     static #availableStates = {
         "knight": ["attackL","attackR","deadL","deadR","idleL","idleR","jumpAttackL","jumpAttackR","jumpL","jumpR","runL","runR","walkL","walkR"],
         "zombie_female": ["attackL","attackR","deadL","deadR","idleL","idleR","walkL","walkR"],
-        "zombie_male": ["attackL","attackR","deadL","deadR","idleL","idleR","walkL","walkR"]
+        "zombie_male": ["attackL","attackR","deadL","deadR","idleL","idleR","walkL","walkR"],
+        "adventure_girl": ["attackL", "attackR", "idleL","idleR", "walkL", "walkR"]
     };
 
     /**
@@ -73,6 +74,11 @@ export class Character {
     isDead;
 
     /**
+     * @property {boolean} meetStranger Indique si le personnage est en contact avec l'étranger
+     */
+    meetStranger;
+
+    /**
      * @property {number} fallingTime Timestamp du début de la chute libre du personnage
      */
     fallingTime;
@@ -94,6 +100,7 @@ export class Character {
         this.#velocities = new Velocity();
         this.onGround = true;
         this.isDead = false;
+        this.meetStranger = false;
         this.fallingTime = null;
         this.lastStatusChangeTime = Date.now();
     }
@@ -198,7 +205,7 @@ export class Character {
      * Fonction qui détermine aléatoirement le prochain état d'un personnage
      */
     setRandomState() {
-        const states = ["idleL","idleR", "walkL","walkR"];
+        const states = Object.keys(Character.#allCharactersData[this.#type]).filter(s => !(s.startsWith("dead") || s.startsWith("attack")));
         if (this.isDead) return;
         let nextState = this.state;
         while (nextState === this.sprite.currentState) nextState = states[Math.floor(Math.random() * states.length)];

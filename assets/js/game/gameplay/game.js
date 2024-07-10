@@ -11,7 +11,7 @@ import {
     FONT_MESSAGE,
     ENEMIES_INITIAL_STATE,
     PAUSE_MESSAGE_POSX,
-    PAUSE_MESSAGE_POSY
+    PAUSE_MESSAGE_POSY, RESUME_DESCRIPTION, WIN_MESSAGE
 } from "./constants.js";
 import {Character} from "./character.js";
 import {CollisionsManager} from "../eventsManagers/collisionsManager.js";
@@ -41,6 +41,11 @@ export class Game {
      * @property {Character} #player Le joueur, avec toutes ses caractéristiques
      */
     #player;
+
+    /**
+     * @property {Character} #player Le personnage none joueur, avec toutes ses caractéristiques
+     */
+    #stranger
 
     /**
      * @property {Character[]} #enemies Tous les ennemis présents dans le jeu
@@ -103,20 +108,32 @@ export class Game {
     #winMessageOnDisplay;
 
     /**
+     * @property {string[]} #strangerMessages Messages du personnage non joueur
+     */
+    #strangerMessages;
+
+    /**
+     * @property {boolean} #strangerMessageOndisplay Indique si le message du personnage non joueur est actuellement affiché
+     */
+    #strangerMessageOndisplay;
+
+    /**
      * Créé une nouvelle instance de Game
      * @param {CanvasElement} canvasElement Informations et méthodes pour la balise Canvas
      * @param {MenuLauncher} menuLauncher Pour revenir au menu principal
      * @param {Level[]} levels Tous les niveaux de jeu
      * @param {Digits[]} digits Pour l'affichage du score
      * @param {Character} player Le joueur, avec toutes ses caractéristiques
+     * @param {Character} stranger Le personnage non joueur, avec toutes ses caractéristiques
      * @param {Character[]} enemies Tous les ennemis présents dans le jeu
      * @param {GameRewards} gameRewards Récompenses de jeu
      */
-    constructor(canvasElement, menuLauncher, levels, digits, player, enemies, gameRewards) {
+    constructor(canvasElement, menuLauncher, levels, digits, player, stranger, enemies, gameRewards) {
         this.#canvasElement = canvasElement;
         this.#levels = levels;
         this.#digits = digits;
         this.#player = player;
+        this.#stranger = stranger;
         this.#enemies = enemies;
         this.#gameRewards = gameRewards;
         this.#keysPressedManager = new KeysPressedManager();
@@ -128,6 +145,8 @@ export class Game {
         this.#pauseMessageOnDisplay = false;
         this.#win = false;
         this.#winMessageOnDisplay = false;
+        this.#strangerMessages = RESUME_DESCRIPTION;
+        this.#strangerMessageOndisplay = false;
     }
 
     /**
@@ -135,6 +154,7 @@ export class Game {
      */
     initAllCanvasImages() {
         this.#player.initCanvasImage();
+        this.#stranger.initCanvasImage();
         this.#enemies.map(enemy => enemy.initCanvasImage());
         this.#digits.map((digit,i) => digit.initCanvasImage(i));
     }
@@ -155,6 +175,7 @@ export class Game {
             } else {
                 this.#keysPressedManager.manageKeysPressed(this.#player);
                 if (this.#win) this.#handleEndOfGame();
+                else if (this.#player.meetStranger) this.#handleStrangerMeeting();
                 else if (this.#keysPressedManager.gamePaused) this.#handleGamePaused();
                 else this.#updateGame();
             }
@@ -182,13 +203,13 @@ export class Game {
     #updateGame() {
         const currentLevel = this.#levels[Level.currentLevel];
         this.#updateEnemiesList();
-        this.#updateEnemiesState();
-        Character.updatePositionsOfCharacters(this.#player, ...this.#enemies);
+        this.#updateNonPlayerCharactersState();
+        Character.updatePositionsOfCharacters(this.#player, this.#stranger, ...this.#enemies);
         Level.levelSelection(this.#score.currentScore,this.#canvasElement);
         this.#updateRewards();
-        currentLevel.ground.areCharactersOnGround(this.#player, ...this.#enemies);
-        this.#collisionHandler.detectCollision(this.#enemies,this.#score);
-        this.#canvasElement.drawImage(...this.#digits,...this.#enemies, this.#player);
+        currentLevel.ground.areCharactersOnGround(this.#player, this.#stranger, ...this.#enemies);
+        this.#collisionHandler.handleCollisions(this.#enemies, this.#stranger, this.#score);
+        this.#canvasElement.drawImage(...this.#digits,...this.#enemies, this.#player, this.#stranger);
     }
 
     /**
@@ -210,7 +231,8 @@ export class Game {
      * Mise à jour de l'état des ennemis
      * On change leur état régulièrement pour leur donner un semblant de vie
      */
-    #updateEnemiesState() {
+    #updateNonPlayerCharactersState() {
+        if (Date.now() - this.#stranger.lastStatusChangeTime > DELAY_BEFORE_ENEMY_STATE_CHANGE) this.#stranger.setRandomState();
         for (const enemy of this.#enemies) {
             if (Date.now() - enemy.lastStatusChangeTime < DELAY_BEFORE_ENEMY_STATE_CHANGE) continue;
             enemy.setRandomState();
@@ -239,19 +261,67 @@ export class Game {
      * Gestion de la victoire
      */
     #handleEndOfGame() {
-        const modal = document.querySelector(".modal"),
-              overlay = document.querySelector(".overlay");
-
         if (!this.#winMessageOnDisplay) {
+            this.#fillModal(WIN_MESSAGE["icon"],WIN_MESSAGE["head"],WIN_MESSAGE["body"]);
+            this.#showModal();
             this.#winMessageOnDisplay = true;
-            modal.classList.remove("hidden");
-            overlay.classList.remove("hidden");
         } else {
-            if (modal.classList.contains("hidden")) {
+            if (this.#isModalHidden()) {
                 this.#winMessageOnDisplay = false;
                 this.#win = null;
             }
         }
+    }
+
+    /**
+     * Gestion de la rencontre entre le joueur et le personnage non joueur
+     */
+    #handleStrangerMeeting() {
+        if (!this.#strangerMessageOndisplay) {
+            this.#strangerMessageOndisplay = true;
+            this.#fillModal(this.#strangerMessages["icon"], this.#strangerMessages["head"], this.#strangerMessages["body"].shift());
+            this.#showModal();
+            this.#stranger.comeBackToLife(0);
+        } else {
+            if (this.#isModalHidden()) {
+                this.#strangerMessageOndisplay = false;
+                if (!this.#strangerMessages["body"].length) this.#player.meetStranger = null;
+                else this.#player.meetStranger = false;
+            }
+        }
+    }
+
+    /**
+     * Fonction qui indique l'état affiché/masqué de la modale
+     * @returns {boolean} Vrai si la modale est masquée, faux sinon
+     */
+    #isModalHidden() {
+        const modal = document.querySelector(".modal");
+        return modal.classList.contains("hidden");
+    }
+
+    /**
+     * Fonction qui affiche la modale
+     */
+    #showModal() {
+        const modal = document.querySelector(".modal"),
+              overlay = document.querySelector(".overlay");
+
+        modal.classList.remove("hidden");
+        overlay.classList.remove("hidden");
+    }
+
+    /**
+     * Remplissage de la modale avec un petit message
+     */
+    #fillModal(icon, head, body) {
+        const modalBtnClose = document.querySelector("section.modal > button.btn-close")
+            , divs = [document.createElement("div"), document.createElement("div")];
+
+        divs[0].innerHTML = `<i class="${icon} fa-xl mr-1vw"></i><strong>${head}</strong>`;
+        divs[1].innerHTML = `<div><p>${body}</p></div>`;
+        modalBtnClose.after(...divs);
+
     }
 
 }

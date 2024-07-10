@@ -53,6 +53,11 @@ export class GameLauncher {
     #player;
 
     /**
+     * @property {Character} #stranger Personnage non joueur
+     */
+    #stranger;
+
+    /**
      * @property {Digits[]} #digits Pour l'affichage du score
      */
     #digits;
@@ -95,6 +100,7 @@ export class GameLauncher {
                 this.#nbEnemies = Math.max(MIN_ENEMIES,Math.ceil(Math.random() * MAX_ENEMIES));
                 this.#levels = [new Level(0),new Level(1)];
                 this.#player = new Character("knight", this.#setState(PLAYER_INITIAL_STATE));
+                this.#stranger = new Character("adventure_girl", this.#setState("idle"));
                 this.#digits =  [new Digits(), new Digits(), new Digits()];
                 this.#gameRewards = Array(NB_REWARDS).fill("").map(_el => new GameRewards());
                 this.#enemies = [];
@@ -127,7 +133,7 @@ export class GameLauncher {
      * Créé une nouvelle partie
      */
     #createNewGame() {
-        this.#game = new Game(this.#canvasElement, this.#menu, this.#levels, this.#digits, this.#player, this.#enemies, this.#gameRewards);
+        this.#game = new Game(this.#canvasElement, this.#menu, this.#levels, this.#digits, this.#player, this.#stranger, this.#enemies, this.#gameRewards);
     }
 
     /**

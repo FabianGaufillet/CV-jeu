@@ -184,7 +184,7 @@ canvas#game {
 }
 
 .modal {
-    background-color: #006769;
+    background: linear-gradient(to right, #000000, #434343);
     border: 1px solid #ddd;
     display: flex;
     flex-direction: column;
@@ -226,7 +226,7 @@ button {
 
 .btn-close {
     align-self: end;
-    transform: translate(10px, -20px);
+    transform: translate(10px, -10px);
     padding: 0.5rem 0.7rem;
     background: #eee;
     border-radius: 50%;

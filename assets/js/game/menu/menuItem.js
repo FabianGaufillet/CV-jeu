@@ -76,6 +76,7 @@ export class MenuItem {
 
     /**
      * Appelle les 2 fonctions de chargement : données et images pour chaque item
+     * @function MenuItem.loadAvailableMenuItems
      * @returns {Array.<Promise<*>>} Intégralité des promesses pour tous les items
      */
     static loadAvailableMenuItems() {

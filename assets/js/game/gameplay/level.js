@@ -47,6 +47,7 @@ export class Level {
 
     /**
      * Charge les données contenues dans un fichier JSON
+     * @function Level.loadData
      * @param {string} levelName Nom du niveau
      * @returns {Promise<Ground>} Promesse de chargement des données
      */
@@ -58,6 +59,7 @@ export class Level {
 
     /**
      * Appelle la fonction de chargement de données pour chaque niveau
+     * @function Level.loadAvailableLevelsData
      * @returns {Array<Promise<Ground>>} Une promesse pour chaque niveau
      */
     static loadAvailableLevelsData() {
@@ -66,6 +68,7 @@ export class Level {
 
     /**
      * Mise à jour du niveau en fonction du score du joueur
+     * @function Level.levelSelection
      * @param {number} score Score actuel du joueur
      * @param {CanvasElement} canvasElement Instance de CanvasElement pour mise à jour de l'image de fond
      */

@@ -31,3 +31,20 @@ export const PAUSE_MESSAGE_POSY = 0.5;
 export const SKILL_UNLOCKED_OPACITY = "1";
 export const SKILL_LOCKED_OPACITY = "0.1";
 export const NB_REWARDS = 14;
+export const WIN_MESSAGE = {
+    "icon": "fa-solid fa-hands-clapping",
+    "head": "FÉLICITATIONS !",
+    "body": "Vous avez débloqué toutes les compétences ! Vous pouvez désormais accéder à mon CV ou continuer à jouer."
+};
+export const RESUME_DESCRIPTION = {
+    "icon": "fa-solid fa-user-graduate",
+    "head": "INFOS",
+    "body": [
+        "Salutations ! N'hésitez pas à venir me voir et m'en dire un peu plus sur vous ! Enfin, quand je serai un peu moins occupée avec ces zombies...",
+        "Vous êtes donc ingénieur et avez commencé à programmer en C et C++ ? Intéressant !",
+        "Vous avez ensuite tenté l'agrégation en génie électrique et réussi à être admissible ? Pas mal !",
+        "Oh ! Un doctorat en physique pour compléter votre formation, avec 4 ans de programmation en Fortran 90 ! Great Job!",
+        "Huit années passées en tant que développeur web Full-Stack ! Hum, ça commence à m'intéresser.",
+        "Et une formation chez IFOCOP pour compléter votre parcours ! Top !"
+    ]
+};

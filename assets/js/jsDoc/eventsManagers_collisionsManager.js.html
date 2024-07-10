@@ -1,4 +1,32 @@
-"use strict";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: eventsManagers/collisionsManager.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: eventsManagers/collisionsManager.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
 
 import {PLAYER_DELAY_BEFORE_BACK_TO_LIFE, ENEMY_DELAY_BEFORE_BACK_TO_LIFE} from "./constants.js";
 
@@ -25,9 +53,9 @@ export class CollisionsManager {
      * @param {Score} score Gestion du score
      */
     handleCollisions(enemies, stranger, score) {
-        const isStrangerAvailable = stranger.state.startsWith("idle") && stranger.onGround;
+        const isStrangerAvailable = stranger.state.startsWith("idle") &amp;&amp; stranger.onGround;
 
-        if (this.#player.meetStranger === false && isStrangerAvailable) {
+        if (this.#player.meetStranger === false &amp;&amp; isStrangerAvailable) {
             if (this.#detectCollision(this.#player, stranger)) this.#player.meetStranger = true;
         }
         for (const enemy of enemies) {
@@ -35,16 +63,16 @@ export class CollisionsManager {
                   collisionPlayerEnemy = this.#detectCollision(this.#player, enemy);
 
             if (collisionStrangerEnemy === "L") {
-                if (stranger.state !== "attackL" && !enemy.isDead) {
+                if (stranger.state !== "attackL" &amp;&amp; !enemy.isDead) {
                     stranger.updateStateOfCharacter("attackL");
                     this.#handleEnemyDeath(enemy);
                 }
             } else if (collisionStrangerEnemy === "R") {
-                if (stranger.state !== "attackR" && !enemy.isDead) {
+                if (stranger.state !== "attackR" &amp;&amp; !enemy.isDead) {
                     stranger.updateStateOfCharacter("attackR");
                     this.#handleEnemyDeath(enemy);
                 }
-            } else if (stranger.state.startsWith("attack") && stranger.sprite.isCurrentAnimationFinished(stranger.moves)) {
+            } else if (stranger.state.startsWith("attack") &amp;&amp; stranger.sprite.isCurrentAnimationFinished(stranger.moves)) {
                 stranger.setRandomState();
             }
 
@@ -70,10 +98,10 @@ export class CollisionsManager {
               playerPositionY = playerCoordinates["top"] + player.canvasImage.sizeInCanvas["height"] / 2,
               enemyCoordinates = enemy.canvasImage.coordinates();
 
-        if (playerPositionY >= enemyCoordinates["top"] && playerPositionY <= enemyCoordinates["bottom"]) {
-            if (playerCoordinates["left"] >= enemyCoordinates["left"] && playerCoordinates["left"] <= enemyCoordinates["right"]) {
+        if (playerPositionY >= enemyCoordinates["top"] &amp;&amp; playerPositionY &lt;= enemyCoordinates["bottom"]) {
+            if (playerCoordinates["left"] >= enemyCoordinates["left"] &amp;&amp; playerCoordinates["left"] &lt;= enemyCoordinates["right"]) {
                 return "L";
-            } else if (playerCoordinates["right"] >= enemyCoordinates["left"] && playerCoordinates["right"] <= enemyCoordinates["right"]) {
+            } else if (playerCoordinates["right"] >= enemyCoordinates["left"] &amp;&amp; playerCoordinates["right"] &lt;= enemyCoordinates["right"]) {
                 return "R";
             }
         }
@@ -91,7 +119,7 @@ export class CollisionsManager {
               attackStatus = [`attack${collisionPositionX}`,`jumpAttack${collisionPositionX}`];
 
         if (!collisionPositionX) {
-            if (enemy.state.startsWith("attack") && enemy.sprite.isCurrentAnimationFinished(enemy.moves)) {
+            if (enemy.state.startsWith("attack") &amp;&amp; enemy.sprite.isCurrentAnimationFinished(enemy.moves)) {
                 enemy.setRandomState();
             }
         } else {
@@ -126,4 +154,26 @@ export class CollisionsManager {
 
     }
 
-}
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CanvasElement.html">CanvasElement</a></li><li><a href="CanvasImage.html">CanvasImage</a></li><li><a href="Character.html">Character</a></li><li><a href="CollisionsManager.html">CollisionsManager</a></li><li><a href="Digits.html">Digits</a></li><li><a href="Game.html">Game</a></li><li><a href="GameLauncher.html">GameLauncher</a></li><li><a href="GameRewards.html">GameRewards</a></li><li><a href="Ground.html">Ground</a></li><li><a href="KeyboardEventsManager.html">KeyboardEventsManager</a></li><li><a href="KeysPressedManager.html">KeysPressedManager</a></li><li><a href="Level.html">Level</a></li><li><a href="Menu.html">Menu</a></li><li><a href="MenuItem.html">MenuItem</a></li><li><a href="MouseButtonPressedManager.html">MouseButtonPressedManager</a></li><li><a href="MouseEventsManager.html">MouseEventsManager</a></li><li><a href="Score.html">Score</a></li><li><a href="Sprite.html">Sprite</a></li><li><a href="Velocity.html">Velocity</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Wed Jul 10 2024 16:15:32 GMT+0200 (heure d’été d’Europe centrale)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
