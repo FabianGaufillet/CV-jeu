@@ -35,12 +35,12 @@ export class CollisionsManager {
                   collisionPlayerEnemy = this.#detectCollision(this.#player, enemy);
 
             if (collisionStrangerEnemy === "L") {
-                if (stranger.state !== "attackL" && !enemy.isDead) {
+                if (!stranger.state.startsWith("attack") && !enemy.isDead) {
                     stranger.updateStateOfCharacter("attackL");
                     this.#handleEnemyDeath(enemy);
                 }
             } else if (collisionStrangerEnemy === "R") {
-                if (stranger.state !== "attackR" && !enemy.isDead) {
+                if (!stranger.state.startsWith("attack") && !enemy.isDead) {
                     stranger.updateStateOfCharacter("attackR");
                     this.#handleEnemyDeath(enemy);
                 }

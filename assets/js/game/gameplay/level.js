@@ -27,9 +27,9 @@ export class Level {
     static nbLevels = 0;
 
     /**
-     * @property {number} scoreToReachForNextLevel Score à atteindre pour changer de niveau
+     * @property {number} scoreNeededToReachNextLevel Score à atteindre pour changer de niveau
      */
-    static scoreToReachForNextLevel = SCORE_REQUIRED_TO_CHANGE_LEVEL;
+    static scoreNeededToReachNextLevel = SCORE_REQUIRED_TO_CHANGE_LEVEL;
 
     /**
      * @property {number} #levelNumber Numéro du niveau
@@ -73,8 +73,8 @@ export class Level {
      * @param {CanvasElement} canvasElement Instance de CanvasElement pour mise à jour de l'image de fond
      */
     static levelSelection(score, canvasElement) {
-        if (score >= Level.scoreToReachForNextLevel) {
-            Level.scoreToReachForNextLevel += SCORE_REQUIRED_TO_CHANGE_LEVEL;
+        if (score >= Level.scoreNeededToReachNextLevel) {
+            Level.scoreNeededToReachNextLevel += SCORE_REQUIRED_TO_CHANGE_LEVEL;
             Level.currentLevel = (Level.currentLevel+1)%Level.nbLevels;
             canvasElement.setColorPalette(Level.currentLevel+1);
         }

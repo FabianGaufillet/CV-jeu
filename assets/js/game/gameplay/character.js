@@ -25,7 +25,7 @@ export class Character {
         "knight": ["attackL","attackR","deadL","deadR","idleL","idleR","jumpAttackL","jumpAttackR","jumpL","jumpR","runL","runR","walkL","walkR"],
         "zombie_female": ["attackL","attackR","deadL","deadR","idleL","idleR","walkL","walkR"],
         "zombie_male": ["attackL","attackR","deadL","deadR","idleL","idleR","walkL","walkR"],
-        "adventure_girl": ["attackL", "attackR", "idleL","idleR", "walkL", "walkR"]
+        "adventure_girl": ["attackL", "attackR", "idleL","idleR", "runL", "runR"]
     };
 
     /**

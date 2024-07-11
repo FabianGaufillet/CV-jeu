@@ -41,10 +41,10 @@ export const RESUME_DESCRIPTION = {
     "head": "INFOS",
     "body": [
         "Salutations ! N'hésitez pas à venir me voir et m'en dire un peu plus sur vous ! Enfin, quand je serai un peu moins occupée avec ces zombies...",
-        "Vous êtes donc ingénieur et avez commencé à programmer en C et C++ ? Intéressant !",
-        "Vous avez ensuite tenté l'agrégation en génie électrique et réussi à être admissible ? Pas mal !",
-        "Oh ! Un doctorat en physique pour compléter votre formation, avec 4 ans de programmation en Fortran 90 ! Great Job!",
-        "Huit années passées en tant que développeur web Full-Stack ! Hum, ça commence à m'intéresser.",
-        "Et une formation chez IFOCOP pour compléter votre parcours ! Top !"
+        "Vous avez commencé la programmation avec le C et C++ durant vos études ? Intéressant !",
+        "Vous avez poursuivi avec 4 ans de programmation en Fortran 90 durant votre doctorat ! Great Job!",
+        "Avant d'enchaîner avec huit années passées en tant que développeur web Full-Stack ! Hum, ça commence à m'intéresser.",
+        "Et une formation chez IFOCOP pour enrichir vos connaissances en développement web ! Top !",
+        "Je peux télécharger votre CV en cliquant simplement sur le bouton situé à gauche ? J'y vais !"
     ]
 };
